@@ -19,5 +19,5 @@ Build an API REST with Symfony
 * Clone or download the project
 * Go to project folder in a terminal
 * Type `composer install`
-* move SSH keys (`private.pem` and `public.pem`) in `/config/jwt/`
+* move SSH keys (`private.pem` and `public.pem`) in `config/jwt/`
 * Configure a new host in your web server with `public/` folder as DocumentRoot
