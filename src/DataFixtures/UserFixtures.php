@@ -57,7 +57,7 @@ class UserFixtures extends Fixture
         $admin->setCompany($bilemo);
         $admin->setPassword($this->passwordEncoder->encodePassword($admin, 'superPassword34!'));
         $admin->setRoles([User::USER_ADMIN]);
-        $manager->persist($user);
+        $manager->persist($admin);
 
         $manager->flush();
     }
