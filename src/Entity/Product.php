@@ -46,7 +46,7 @@ class Product
     /**
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"list_products", "show_product", "show_brand"})
+     * @Groups({"list_products", "show_product"})
      */
     private $brand;
 
