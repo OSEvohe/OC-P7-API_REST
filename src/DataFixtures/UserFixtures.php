@@ -38,17 +38,25 @@ class UserFixtures extends Fixture
         $manager->persist($bilemo);
 
         $user = new User();
-        $user->setUsername('user1');
+        $user
+            ->setUsername('user1')
+            ->setEmail('user1@company.com')
+            ->setFirstName('John')
+            ->setLastName('Doe');
         $user->setCompany($company);
-        $user->setPassword($this->passwordEncoder->encodePassword($user, 'password'));
+        $user->setPassword($this->passwordEncoder->encodePassword($user, 'PassWord01!'));
         $user->setRoles([User::USER_COMPANY_ADMIN]);
         $manager->persist($user);
 
-        $user = new User();
-        $user->setUsername('admin');
-        $user->setCompany($bilemo);
-        $user->setPassword($this->passwordEncoder->encodePassword($user, 'password'));
-        $user->setRoles([User::USER_ADMIN]);
+        $admin = new User();
+        $admin
+            ->setUsername('admin')
+            ->setEmail('admin@bilemo.com')
+            ->setFirstName('Sebastien')
+            ->setLastName('Admin');
+        $admin->setCompany($bilemo);
+        $admin->setPassword($this->passwordEncoder->encodePassword($admin, 'superPassword34!'));
+        $admin->setRoles([User::USER_ADMIN]);
         $manager->persist($user);
 
         $manager->flush();
