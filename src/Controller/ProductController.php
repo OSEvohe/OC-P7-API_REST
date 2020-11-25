@@ -10,7 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-/** @Route ("/api") */
+/**
+ * @Route ("/api")
+ */
 class ProductController extends AbstractController
 {
     /**
@@ -22,7 +24,7 @@ class ProductController extends AbstractController
         $er = $this->getDoctrine()->getRepository(Product::class);
         $products = $er->findAll();
 
-        return $this->json($products, Response::HTTP_OK, [], ['groups' => 'list_product']);
+        return $this->json($products, Response::HTTP_OK, [], ['groups' => 'list_products']);
     }
 
 

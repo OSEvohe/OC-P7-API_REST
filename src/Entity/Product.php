@@ -15,19 +15,19 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"list_product", "show_product", "show_brand"})
+     * @Groups({"list_products", "show_product", "show_brand"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"list_product", "show_product", "show_brand"})
+     * @Groups({"list_products", "show_product", "show_brand"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="decimal", precision=7, scale=2)
-     * @Groups({"list_product", "show_product", "show_brand"})
+     * @Groups({"list_products", "show_product", "show_brand"})
      */
     private $price;
 
@@ -46,7 +46,7 @@ class Product
     /**
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"list_product", "show_product", "show_brand"})
+     * @Groups({"list_products", "show_product", "show_brand"})
      */
     private $brand;
 
