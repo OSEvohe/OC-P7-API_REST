@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/products", name="products_list", methods={"GET"})
+     * @Route("/api/products", name="products_list", methods={"GET"})
      * @return JsonResponse
      */
     public function index(): JsonResponse
@@ -19,6 +19,6 @@ class ProductController extends AbstractController
         $er = $this->getDoctrine()->getRepository(Product::class);
         $products = $er->findAll();
 
-        return $this->json($products, Response::HTTP_OK, [], ['groups' => 'list_product']);
+        return $this->json($products, Response::HTTP_OK);
     }
 }
