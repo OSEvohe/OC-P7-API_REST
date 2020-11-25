@@ -48,7 +48,7 @@ class BrandController extends AbstractController
      */
     public function create(Request $request): JsonResponse
     {
-        return new JsonResponse(["TOTO" => "Create a new brand in database"]);
+        return new JsonResponse(["TODO" => "Create a new brand in database"]);
     }
 
 
@@ -62,7 +62,7 @@ class BrandController extends AbstractController
      */
     public function update(Brand $brand, Request $request): JsonResponse
     {
-        return new JsonResponse(["TOTO" => "Update brand in database"]);
+        return new JsonResponse(["TODO" => "Update brand in database"]);
     }
 
 
@@ -74,6 +74,6 @@ class BrandController extends AbstractController
      */
     public function delete(Brand $brand): JsonResponse
     {
-        return new JsonResponse(["TOTO" => 'delete brand from database']);
+        return new JsonResponse(["TODO" => 'delete brand from database']);
     }
 }

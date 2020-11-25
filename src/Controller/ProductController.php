@@ -47,7 +47,7 @@ class ProductController extends AbstractController
      */
     public function create(Request $request): JsonResponse
     {
-        return new JsonResponse(["TOTO" => "Create a new product in database"]);
+        return new JsonResponse(["TODO" => "Create a new product in database"]);
     }
 
 
@@ -60,7 +60,7 @@ class ProductController extends AbstractController
      */
     public function update(Product $product, Request $request): JsonResponse
     {
-        return new JsonResponse(["TOTO" => "Update product in database"]);
+        return new JsonResponse(["TODO" => "Update product in database"]);
     }
 
 
@@ -72,6 +72,6 @@ class ProductController extends AbstractController
      */
     public function delete(Product $product): JsonResponse
     {
-        return new JsonResponse(["TOTO" => 'delete product from database']);
+        return new JsonResponse(["TODO" => 'delete product from database']);
     }
 }
