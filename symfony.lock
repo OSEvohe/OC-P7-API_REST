@@ -78,6 +78,24 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
+    "lcobucci/jwt": {
+        "version": "3.4.0"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+        },
+        "files": [
+            "./config/packages/lexik_jwt_authentication.yaml"
+        ]
+    },
+    "namshi/jose": {
+        "version": "7.2.3"
+    },
     "nikic/php-parser": {
         "version": "v4.10.2"
     },
@@ -86,6 +104,15 @@
     },
     "php": {
         "version": "7.3"
+    },
+    "phpdocumentor/reflection-common": {
+        "version": "2.2.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "5.2.2"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.4.0"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -259,6 +286,12 @@
     "symfony/security-http": {
         "version": "v5.1.8"
     },
+    "symfony/serializer": {
+        "version": "v5.1.8"
+    },
+    "symfony/serializer-pack": {
+        "version": "v1.0.4"
+    },
     "symfony/service-contracts": {
         "version": "v2.2.0"
     },
@@ -276,6 +309,9 @@
     },
     "symfony/yaml": {
         "version": "v5.1.8"
+    },
+    "webmozart/assert": {
+        "version": "1.9.1"
     },
     "zendframework/zend-code": {
         "version": "3.4.1"
