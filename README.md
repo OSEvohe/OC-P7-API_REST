@@ -10,20 +10,21 @@ Build an API REST with Symfony
 * A database engine (MariaDB, MySql, PostgreSQL...)
 * [OpenSSL command line tool](https://www.openssl.org/docs/man1.0.2/man1/openssl.html) or already generated SSH Keys
 
-## Generate OpenSSH Keys
-* Generate private key :`openssl genrsa -out private.pem -aes256 4096`
-* Generate public key : `openssl rsa -pubout -in private.pem -out public.pem`
-  
 ## Installation
 * Clone or download the project
 * Go to project folder in a terminal
 * Type `composer install`
-* move SSH keys (`private.pem` and `public.pem`) in `config/jwt/`
 * Configure a new host in your web server with `public/` folder as DocumentRoot
 
 ### Database setup
-* Copy .env to .env.local and edit database parameters
+* Copy `.env` to `.env.local` and edit database parameters
 * Initialize the database : 
   * `php bin/console doctrine:database:create`
   * `php bin/console make:migration`
   * `php bin/console doctrine:migrations:migrate`
+  
+### JWT Authentication Setup
+* Generate private key :`openssl genrsa -out private.pem -aes256 4096`
+* Generate public key : `openssl rsa -pubout -in private.pem -out public.pem`
+* move SSH keys (`private.pem` and `public.pem`) to `config/jwt/`
+* set passphrase used to generate the keys in your env.local file (`JWT_PASSPHRASE`)
