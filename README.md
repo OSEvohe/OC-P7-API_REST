@@ -1,4 +1,4 @@
-#BileMo API
+# BileMo API
 
 OpenClassRooms 7th Project
 Build an API REST with Symfony
@@ -20,4 +20,4 @@ Build an API REST with Symfony
 * Go to project folder in a terminal
 * Type `composer install`
 * move SSH keys (`private.pem` and `public.pem`) in `/config/jwt/`
-* Configure a new host in your web server with public/ folder as DocumentRoot
+* Configure a new host in your web server with `public/` folder as DocumentRoot
