@@ -4,12 +4,18 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Rollerworks\Component\PasswordStrength\Validator\Constraints\PasswordRequirements;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity (fields="username", message="This username is already used")
+ * @UniqueEntity (fields="email", message="This email address is already used")
  */
 class User implements UserInterface
 {
@@ -27,6 +33,15 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"show_user", "list_users", "show_company"})
+     * @Assert\NotBlank (message="Username is missing or empty")
+     * @Assert\Regex(pattern="/^[a-z]+[a-z0-9]+$/i", message="Username must start by a letter and can only consist of alphanumeric characters")
+     * @Assert\Length (
+     *     min = 3,
+     *     max = 30,
+     *     minMessage = "Username must be at least {{ limit }} characters long",
+     *     maxMessage = "Username cannot be longer than {{ limit }} characters",
+     *     )
+     * @Ass
      */
     private $username;
 
@@ -34,6 +49,29 @@ class User implements UserInterface
      * @ORM\Column(type="json")
      */
     private $roles = [];
+
+    /**
+     * @var string $plainPassword the plain password, not stored
+     * @UserPassword()
+     * @Assert\NotBlank(message = "Password is missing or empty")
+     * @Assert\Length(
+     *     max = 255,
+     *     maxMessage="Password cannot be longer than {{limit}} characters"
+     * )
+     * @PasswordRequirements(
+     *      minLength = 8,
+     *      tooShortMessage = "Password must be at least {{ limit }} characters long",
+     *      requireLetters = true,
+     *      missingLettersMessage = "Password must contains at least one letter",
+     *      requireCaseDiff = true,
+     *      requireCaseDiffMessage = "Password must contains lower and upper case letters",
+     *      requireNumbers = true,
+     *      missingNumbersMessage = "Password must contains at least one number",
+     *      requireSpecialCharacter = true,
+     *      missingSpecialCharacterMessage = "Password must contains at least one special character"
+     * )
+     */
+    private $plainPassword;
 
     /**
      * @var string The hashed password
@@ -44,19 +82,34 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"show_user"})
+     * @Assert\NotBlank(message= "Email is missing or empty")
+     * @Assert\Email
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=100)
      * @Groups({"show_user"})
-     *
+     * @Assert\NotBlank(message="Firstname is missing or empty")
+     * @Assert\Length (
+     *     min = 5,
+     *     max = 100,
+     *     minMessage = "First name must be at least {{ limit }} characters long",
+     *     maxMessage = "First name cannot be longer than {{ limit }} characters",
+     *     )
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=100)
      * @Groups({"show_user"})
+     * @Assert\NotBlank(message="Lastname is missing or empty")
+     * @Assert\Length (
+     *     min = 5,
+     *     max = 100,
+     *     minMessage = "Last name must be at least {{ limit }} characters long",
+     *     maxMessage = "Last name cannot be longer than {{ limit }} characters",
+     *     )
      */
     private $lastName;
 
@@ -64,6 +117,7 @@ class User implements UserInterface
      * @ORM\ManyToOne(targetEntity=Company::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"show_user"})
+     * @Assert\NotBlank(message="Company is missing or empty")
      */
     private $company;
 
@@ -79,7 +133,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
 
     public function setUsername(string $username): self
@@ -113,7 +167,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -186,5 +240,21 @@ class User implements UserInterface
         $this->company = $company;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $plainPassword
+     */
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
     }
 }
