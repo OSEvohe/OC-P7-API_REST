@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @UniqueEntity(fields = "name", message = "This phone name is already used")
  */
 class Product
 {
@@ -22,24 +25,51 @@ class Product
     /**
      * @ORM\Column(type="string", length=100)
      * @Groups({"list_products", "show_product", "show_brand"})
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *     min = 2,
+     *     max = 100,
+     *     minMessage = "Phone name must be at least {{ limit }} characters long",
+     *     maxMessage = "Phone name cannot be longer than {{ limit }} characters",
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="decimal", precision=7, scale=2)
      * @Groups({"list_products", "show_product", "show_brand"})
+     * @Assert\NotBlank
+     * @Assert\DivisibleBy(value = 0.01, message="Price must not contains more than 2 decimal digits")
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 99999.99,
+     *      notInRangeMessage = "Price must be between {{ min }}cm and {{ max }}",
+     * )
      */
     private $price;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"show_product"})
+     * @Assert\NotBlank
+     * @Assert\Length (
+     *     min = 10,
+     *     max = 65535,
+     *     minMessage = "Phone description must be at least {{ limit }} characters long",
+     *     maxMessage = "Phone description cannot be longer than {{ limit }} characters",
+     *     )
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"show_product"})
+     * @Assert\Length (
+     *     min = 5,
+     *     max = 255,
+     *     minMessage = "Image path must be at least {{ limit }} characters long",
+     *     maxMessage = "Image path cannot be longer than {{ limit }} characters",
+     *     )
      */
     private $image;
 
@@ -47,6 +77,7 @@ class Product
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"list_products", "show_product"})
+     * @Assert\NotBlank
      */
     private $brand;
 
