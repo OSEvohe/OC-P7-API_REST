@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Form\ProductType;
+use App\Service\FormHelper;
+use App\Service\ManageProduct;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +18,22 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProductController extends AbstractController
 {
+    /**
+     * @var ManageProduct
+     */
+    private $manageProduct;
+
+
+    /**
+     * ProductController constructor.
+     * @param ManageProduct $manageProduct
+     */
+    public function __construct(ManageProduct $manageProduct)
+    {
+        $this->manageProduct = $manageProduct;
+    }
+
+
     /**
      * @Route("/products", name="products_list", methods={"GET"})
      * @return JsonResponse
@@ -43,11 +62,22 @@ class ProductController extends AbstractController
      * @Route ("/product", name="product_create", methods={"POST"} )
      *
      * @param Request $request
+     * @param FormHelper $formHelper
      * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, FormHelper $formHelper): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Create a new product in database"]);
+        $product = new Product();
+        $form = $this->createForm(ProductType::class, $product);
+
+        $data = json_decode($request->getContent(), true);
+
+        if (false === $formHelper->validate($form, $data)) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $this->manageProduct->create($product);
+        return $this->json($product, Response::HTTP_CREATED, [], ['groups' => 'show_product']);
     }
 
 
