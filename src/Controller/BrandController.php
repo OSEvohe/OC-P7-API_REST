@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Brand;
+use App\Form\BrandType;
+use App\Service\DataHelper;
+use App\Service\FormHelper;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,11 +48,23 @@ class BrandController extends AbstractController
      * @Route ("/brand", name="brand_create", methods={"POST"} )
      *
      * @param Request $request
+     * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
+     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper,  EntityManagerInterface $em): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Create a new brand in database"]);
+        $brand = new Brand();
+        $form = $this->createForm(BrandType::class, $brand);
+
+        if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()))) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $em->persist($brand);
+        $em->flush();
+        return $this->json($brand, Response::HTTP_CREATED, [], ['groups' => 'show_brand']);
     }
 
 
@@ -58,11 +74,22 @@ class BrandController extends AbstractController
      *
      * @param Brand $brand
      * @param Request $request
+     * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
+     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    public function update(Brand $brand, Request $request): JsonResponse
+    public function update(Brand $brand, Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Update brand in database"]);
+        $form = $this->createForm(BrandType::class, $brand);
+
+        if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()), $request->isMethod("PUT"))) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $em->persist($brand);
+        $em->flush();
+        return $this->json($brand, Response::HTTP_OK, [], ['groups' => 'show_brand']);
     }
 
 
@@ -70,10 +97,15 @@ class BrandController extends AbstractController
      * @Route ("/brand/{id}", name="brand_delete", methods={"DELETE"} )
      *
      * @param Brand $brand
+     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    public function delete(Brand $brand): JsonResponse
+    public function delete(Brand $brand, EntityManagerInterface $em): JsonResponse
     {
-        return new JsonResponse(["TODO" => 'delete brand from database']);
+        $id = $brand->getId();
+        $em->remove($brand);
+        $em->flush();
+
+        return $this->json("Brand #".$id." deleted!",Response::HTTP_OK);
     }
 }

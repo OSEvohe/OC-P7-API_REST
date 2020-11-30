@@ -11,8 +11,8 @@ use App\Entity\User;
 use App\Exception\ApiBadParameterException;
 use App\Exception\ApiObjectNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
-use HttpException;
 use ReflectionClass;
+use ReflectionException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,7 +38,7 @@ class BilemoParamConverter implements ParamConverterInterface
         $class = $configuration->getClass();
         $name = $configuration->getName();
 
-        if (true === is_int($request->get('id'))){
+        if (true === is_numeric($request->get('id'))){
             $this->find($request, $class, $name);
         } else {
             throw new ApiBadParameterException("Bad Url Parameter, ".$this->getShortClassName($class) . " id must be an integer", null, 500);
@@ -57,7 +57,7 @@ class BilemoParamConverter implements ParamConverterInterface
 
     public function supports(ParamConverter $configuration)
     {
-        return array_search($configuration->getClass(),
+        return false !== array_search($configuration->getClass(),
             [
                 Product::class,
                 Brand::class,
@@ -71,7 +71,7 @@ class BilemoParamConverter implements ParamConverterInterface
     {
         try {
             return (new ReflectionClass($class))->getShortName();
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
         }
     }
 
