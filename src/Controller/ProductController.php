@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\ManageProduct;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,16 +64,15 @@ class ProductController extends AbstractController
      *
      * @param Request $request
      * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
      * @return JsonResponse
      */
-    public function create(Request $request, FormHelper $formHelper): JsonResponse
+    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
 
-        $data = json_decode($request->getContent(), true);
-
-        if (false === $formHelper->validate($form, $data)) {
+        if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()))) {
             return $formHelper->errorsResponse($form);
         }
 
@@ -86,12 +86,23 @@ class ProductController extends AbstractController
      *
      * @param Product $product
      * @param Request $request
+     * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
      * @return JsonResponse
      */
-    public function update(Product $product, Request $request): JsonResponse
+    public function update(Product $product, Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Update product in database"]);
+        $form = $this->createForm(ProductType::class, $product);
+
+      if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()), $request->isMethod("PUT"))) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $this->manageProduct->update($product);
+        return $this->json($product, Response::HTTP_OK, [], ['groups' => 'show_product']);
     }
+
+
 
 
     /**
@@ -102,6 +113,9 @@ class ProductController extends AbstractController
      */
     public function delete(Product $product): JsonResponse
     {
-        return new JsonResponse(["TODO" => 'delete product from database']);
+        $id = $product->getId();
+        $this->manageProduct->delete($product);
+
+        return $this->json("Product #".$id." deleted!",Response::HTTP_OK);
     }
 }

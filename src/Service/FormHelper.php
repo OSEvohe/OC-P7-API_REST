@@ -4,7 +4,7 @@
 namespace App\Service;
 
 
-use App\Http\ApiErrorResponse;
+use App\Response\ApiErrorResponse;
 use Symfony\Component\Form\FormInterface;
 
 class FormHelper

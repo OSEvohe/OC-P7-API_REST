@@ -25,7 +25,7 @@ class Product
     /**
      * @ORM\Column(type="string", length=100)
      * @Groups({"list_products", "show_product", "show_brand"})
-     * @Assert\NotBlank
+     * @Assert\NotBlank()
      * @Assert\Length(
      *     min = 2,
      *     max = 100,
@@ -39,11 +39,11 @@ class Product
      * @ORM\Column(type="decimal", precision=7, scale=2)
      * @Groups({"list_products", "show_product", "show_brand"})
      * @Assert\NotBlank
-     * @Assert\DivisibleBy(value = 0.01, message="Price must not contains more than 2 decimal digits")
+     * @Assert\Regex(pattern = "/^\d+([.]\d{1,2})?$/", message="Price can containt up to 2 decimal digits with '.' as decimal separator")
      * @Assert\Range(
      *      min = 1,
      *      max = 99999.99,
-     *      notInRangeMessage = "Price must be between {{ min }}cm and {{ max }}",
+     *      notInRangeMessage = "Price must be between {{ min }} and {{ max }}",
      * )
      */
     private $price;
