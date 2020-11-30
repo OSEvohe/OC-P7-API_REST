@@ -7,6 +7,7 @@ use App\Form\ProductType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\ManageProduct;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
