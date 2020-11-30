@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d65e20a13c293a1e2e5ec0ab791e7b1c",
+    "content-hash": "a42fc1e212cd87d587005e2d87d5ae40",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -1339,16 +1339,16 @@
         },
         {
             "name": "lcobucci/jwt",
-            "version": "3.4.0",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "320b9f05741b24acbbaf1106ed267ff3817fd74d"
+                "reference": "958a9873a63b0244a72f6e354ccc86019ee674a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/320b9f05741b24acbbaf1106ed267ff3817fd74d",
-                "reference": "320b9f05741b24acbbaf1106ed267ff3817fd74d",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/958a9873a63b0244a72f6e354ccc86019ee674a5",
+                "reference": "958a9873a63b0244a72f6e354ccc86019ee674a5",
                 "shasum": ""
             },
             "require": {
@@ -1408,7 +1408,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2020-11-25T01:46:26+00:00"
+            "time": "2020-11-27T01:17:14+00:00"
         },
         {
             "name": "lexik/jwt-authentication-bundle",
@@ -1978,6 +1978,141 @@
                 "psr-3"
             ],
             "time": "2020-03-23T09:12:05+00:00"
+        },
+        {
+            "name": "rollerworks/password-strength-bundle",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rollerworks/PasswordStrengthBundle.git",
+                "reference": "673021055a76d85a2817f4732a4d5feae0b4b4fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rollerworks/PasswordStrengthBundle/zipball/673021055a76d85a2817f4732a4d5feae0b4b4fb",
+                "reference": "673021055a76d85a2817f4732a4d5feae0b4b4fb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1",
+                "rollerworks/password-strength-validator": "^1.0.1",
+                "symfony/framework-bundle": "^3.4.22 || ^4.0 || ^5.0"
+            },
+            "require-dev": {
+                "matthiasnoback/symfony-dependency-injection-test": "^3.1.0 || ^4.1.0",
+                "symfony/console": "^3.4.22 || ^4.0 || ^5.0",
+                "symfony/phpunit-bridge": "^3.4.22 || ^4.0 || ^5.0",
+                "symfony/var-dumper": "^3.4.22 || ^4.0 || ^5.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rollerworks\\Bundle\\PasswordStrengthBundle\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "test/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastiaan Stok",
+                    "email": "s.stok@rollercapes.net"
+                },
+                {
+                    "name": "Luis Cordova",
+                    "email": "cordoval@gmail.com"
+                },
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/rollerworks/PasswordStrengthBundle/contributors"
+                }
+            ],
+            "description": "Password-strength validator bundle for Symfony",
+            "keywords": [
+                "bundle",
+                "password",
+                "symfony",
+                "validator"
+            ],
+            "time": "2019-12-02T11:49:23+00:00"
+        },
+        {
+            "name": "rollerworks/password-strength-validator",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rollerworks/PasswordStrengthValidator.git",
+                "reference": "8c6441ba98253203964c2ecba53ef007e0324e33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rollerworks/PasswordStrengthValidator/zipball/8c6441ba98253203964c2ecba53ef007e0324e33",
+                "reference": "8c6441ba98253203964c2ecba53ef007e0324e33",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1",
+                "psr/container": "^1.0",
+                "psr/log": "^1.0",
+                "symfony/polyfill-mbstring": "^1.5.0",
+                "symfony/translation": "^3.4.22 || ^4.0 || ^5.0",
+                "symfony/validator": "^3.4.22 || ^4.0 || ^5.0"
+            },
+            "require-dev": {
+                "guzzlehttp/psr7": "^1.4",
+                "php-http/httplug": "^1.1",
+                "symfony/config": "^3.4.22 || ^4.0 || ^5.0",
+                "symfony/console": "^3.4.22 || ^4.0 || ^5.0",
+                "symfony/phpunit-bridge": "^3.4.22 || ^4.0 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rollerworks\\Component\\PasswordStrength\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "test/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastiaan Stok",
+                    "email": "s.stok@rollercapes.net"
+                },
+                {
+                    "name": "Luis Cordova",
+                    "email": "cordoval@gmail.com"
+                },
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/rollerworks/PasswordStrengthValidator/contributors"
+                }
+            ],
+            "description": "Password-strength validator for Symfony",
+            "keywords": [
+                "password",
+                "symfony",
+                "validator"
+            ],
+            "time": "2019-12-01T19:22:17+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -5170,6 +5305,93 @@
             "time": "2020-10-24T12:01:57+00:00"
         },
         {
+            "name": "symfony/translation",
+            "version": "v5.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/translation.git",
+                "reference": "27980838fd261e04379fa91e94e81e662fe5a1b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/27980838fd261e04379fa91e94e81e662fe5a1b6",
+                "reference": "27980838fd261e04379fa91e94e81e662fe5a1b6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/polyfill-php80": "^1.15",
+                "symfony/translation-contracts": "^2"
+            },
+            "conflict": {
+                "symfony/config": "<4.4",
+                "symfony/dependency-injection": "<5.0",
+                "symfony/http-kernel": "<5.0",
+                "symfony/twig-bundle": "<5.0",
+                "symfony/yaml": "<4.4"
+            },
+            "provide": {
+                "symfony/translation-implementation": "2.0"
+            },
+            "require-dev": {
+                "psr/log": "~1.0",
+                "symfony/config": "^4.4|^5.0",
+                "symfony/console": "^4.4|^5.0",
+                "symfony/dependency-injection": "^5.0",
+                "symfony/finder": "^4.4|^5.0",
+                "symfony/http-kernel": "^5.0",
+                "symfony/intl": "^4.4|^5.0",
+                "symfony/service-contracts": "^1.1.2|^2",
+                "symfony/yaml": "^4.4|^5.0"
+            },
+            "suggest": {
+                "psr/log-implementation": "To use logging capability in translator",
+                "symfony/config": "",
+                "symfony/yaml": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Translation\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Translation Component",
+            "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-24T12:01:57+00:00"
+        },
+        {
             "name": "symfony/translation-contracts",
             "version": "v2.3.0",
             "source": {
@@ -5948,16 +6170,16 @@
         },
         {
             "name": "symfony/maker-bundle",
-            "version": "v1.23.0",
+            "version": "v1.24.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/maker-bundle.git",
-                "reference": "ffaee624a20a462ec2da82942d3c9d8fc8dd1421"
+                "reference": "40b49abf01810453f73e3e239759f1736607f029"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/ffaee624a20a462ec2da82942d3c9d8fc8dd1421",
-                "reference": "ffaee624a20a462ec2da82942d3c9d8fc8dd1421",
+                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/40b49abf01810453f73e3e239759f1736607f029",
+                "reference": "40b49abf01810453f73e3e239759f1736607f029",
                 "shasum": ""
             },
             "require": {
@@ -5967,6 +6189,7 @@
                 "symfony/config": "^3.4|^4.0|^5.0",
                 "symfony/console": "^3.4|^4.0|^5.0",
                 "symfony/dependency-injection": "^3.4|^4.0|^5.0",
+                "symfony/deprecation-contracts": "^2.2",
                 "symfony/filesystem": "^3.4|^4.0|^5.0",
                 "symfony/finder": "^3.4|^4.0|^5.0",
                 "symfony/framework-bundle": "^3.4|^4.0|^5.0",
@@ -5987,7 +6210,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-main": "1.0-dev"
                 }
             },
             "autoload": {
@@ -6027,7 +6250,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-28T15:35:16+00:00"
+            "time": "2020-11-25T17:19:22+00:00"
         }
     ],
     "aliases": [],

@@ -41,7 +41,6 @@ class User implements UserInterface
      *     minMessage = "Username must be at least {{ limit }} characters long",
      *     maxMessage = "Username cannot be longer than {{ limit }} characters",
      *     )
-     * @Ass
      */
     private $username;
 
