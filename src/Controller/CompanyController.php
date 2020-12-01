@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Company;
+use App\Form\CompanyType;
+use App\Service\DataHelper;
+use App\Service\FormHelper;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,11 +48,23 @@ class CompanyController extends AbstractController
      * @Route ("/company", name="company_create", methods={"POST"} )
      *
      * @param Request $request
+     * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
+     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Create a new company in database"]);
+        $company = new Company();
+        $form = $this->createForm(CompanyType::class, $company);
+
+        if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()))) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $em->persist($company);
+        $em->flush();
+        return $this->json($company, Response::HTTP_CREATED, [], ['groups' => 'show_company']);
     }
 
 
@@ -58,11 +74,22 @@ class CompanyController extends AbstractController
      *
      * @param Company $company
      * @param Request $request
+     * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
+     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    public function update(Company $company, Request $request): JsonResponse
+    public function update(Company $company, Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Update company in database"]);
+        $form = $this->createForm(CompanyType::class, $company);
+
+        if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()), $request->isMethod("PUT"))) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $em->persist($company);
+        $em->flush();
+        return $this->json($company, Response::HTTP_OK, [], ['groups' => 'show_company']);
     }
 
 
@@ -70,10 +97,15 @@ class CompanyController extends AbstractController
      * @Route ("/company/{id}", name="company_delete", methods={"DELETE"} )
      *
      * @param Company $company
+     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    public function delete(Company $company): JsonResponse
+    public function delete(Company $company, EntityManagerInterface $em): JsonResponse
     {
-        return new JsonResponse(["TODO" => 'delete company from database']);
+        $id = $company->getId();
+        $em->remove($company);
+        $em->flush();
+
+        return $this->json("Brand #".$id." deleted!",Response::HTTP_OK);
     }
 }
