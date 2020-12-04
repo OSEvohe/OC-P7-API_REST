@@ -48,14 +48,14 @@ class BilemoParamConverter implements ParamConverterInterface
 
     private function find(Request $request, $class, $name){
         $id = $request->get('id');
-        if (null === $product = $this->em->getRepository($class)->find($id)) {
+        if (null === $entity = $this->em->getRepository($class)->find($id)) {
             throw new ApiObjectNotFoundException($this->getShortClassName($class) . " with id $id not found");
         }
 
-        $request->attributes->set($name, $product);
+        $request->attributes->set($name, $entity);
     }
 
-    public function supports(ParamConverter $configuration)
+    public function supports(ParamConverter $configuration): bool
     {
         return false !== array_search($configuration->getClass(),
             [
@@ -67,7 +67,7 @@ class BilemoParamConverter implements ParamConverterInterface
             true);
     }
 
-    private function getShortClassName($class)
+    private function getShortClassName($class): string
     {
         try {
             return (new ReflectionClass($class))->getShortName();
