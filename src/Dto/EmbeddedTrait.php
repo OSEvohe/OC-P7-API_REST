@@ -9,10 +9,11 @@ trait EmbeddedTrait
     private $_embedded = [];
 
     /**
-     * @param array $embed
+     * @param string $key
+     * @param $embed
      */
-    public function addEmbedded(array $embed): void
+    public function addEmbedded(string $key, $embed): void
     {
-        $this->_embedded[] = $embed;
+        $this->_embedded[$key] = $embed;
     }
 }
