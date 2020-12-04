@@ -7,32 +7,29 @@ namespace App\Dto;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-class BrandDto extends AbstractDto
+class CompanyDto extends AbstractDto
 {
     use LinksTrait;
     use EmbeddedTrait;
 
 
-    /**
-     * @Groups({"list_products", "show_product", "show_brand", "list_brands"})
-     */
-    public function getId(): int
+    /** @Groups({"show_company", "list_company", "show_user", "list_users"}) */
+    public function getId()
     {
         return $this->entity->getId();
     }
 
 
-    /**
-     * @Groups({"list_products", "show_product", "show_brand", "list_brands"})
-     */
-    public function getName(): string
+    /** @Groups({"show_company", "list_company", "show_user", "list_users"}) */
+    public function getName()
     {
         return $this->entity->getName();
     }
 
+
     /**
      * @SerializedName("_links")
-     * @Groups({"list_brand", "show_brand", "show_product"})
+     * @Groups({"list_company", "show_company", "show_user", "list_users"})
      */
     public function getLinks()
     {
@@ -40,7 +37,7 @@ class BrandDto extends AbstractDto
     }
 
     /**
-     * @Groups({"show_brand"})
+     * @Groups({"show_company"})
      * @SerializedName("_embedded")
      */
     public function getEmbedded()
