@@ -4,28 +4,20 @@
 namespace App\Service\HAL;
 
 
-use App\Dto\BrandDto;
+use App\Dto\CompanyDto;
 use App\Entity\User;
 
-
-class BrandHAL extends AbstractHAL
+class CompanyHAL extends AbstractHAL
 {
-    /** @var BrandDto $dto */
+    /** @var CompanyDto */
     protected $dto;
 
 
-    public function getDtoClass()
+    protected function getDtoClass()
     {
-        return BrandDto::class;
+        return CompanyDto::class;
     }
 
-    protected function setEmbedded()
-    {
-        $productHAL = new ProductHAL($this->router, $this->security, true);
-        $this->dto->addEmbedded([
-            'products' => $this->HalifyCollection($this->dto->getEntity()->getProducts(), $productHAL)
-        ]);
-    }
 
     protected function setLinks()
     {
@@ -41,7 +33,7 @@ class BrandHAL extends AbstractHAL
     {
         $this->dto->addLink(["self" =>
             [
-                "href" => $this->router->generate("brand_read", ['id' => $this->dto->getId()]),
+                "href" => $this->router->generate("company_read", ['id' => $this->dto->getId()]),
                 "method" => "GET"
             ]
         ]);
@@ -51,7 +43,7 @@ class BrandHAL extends AbstractHAL
     {
         $this->dto->addLink(["update" =>
             [
-                "href" => $this->router->generate("brand_update", ['id' => $this->dto->getId()]),
+                "href" => $this->router->generate("company_update", ['id' => $this->dto->getId()]),
                 "method" => "PATCH"
             ]
         ]);
@@ -61,7 +53,7 @@ class BrandHAL extends AbstractHAL
     {
         $this->dto->addLink(["replace" =>
             [
-                "href" => $this->router->generate("brand_update", ['id' => $this->dto->getId()]),
+                "href" => $this->router->generate("company_update", ['id' => $this->dto->getId()]),
                 "method" => "PUT"
             ]
         ]);
@@ -71,9 +63,17 @@ class BrandHAL extends AbstractHAL
     {
         $this->dto->addLink(["delete" =>
             [
-                "href" => $this->router->generate("brand_update", ['id' => $this->dto->getId()]),
+                "href" => $this->router->generate("company_update", ['id' => $this->dto->getId()]),
                 "method" => "DELETE"
             ]
+        ]);
+    }
+
+    protected function setEmbedded()
+    {
+        $userHAL =  new UserHAL($this->router, $this->security, true);
+        $this->dto->addEmbedded([
+            'users' => $this->HalifyCollection($this->dto->getEntity()->getUsers(), $userHAL)
         ]);
     }
 }

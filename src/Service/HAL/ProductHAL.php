@@ -6,29 +6,12 @@ namespace App\Service\HAL;
 
 use App\Dto\ProductDto;
 use App\Entity\User;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
 
 
 class ProductHAL extends AbstractHAL
 {
     /** @var ProductDto */
     protected $dto;
-
-    /** @var RouterInterface */
-    protected $router;
-
-    /** @var Security */
-    private $security;
-
-
-    public function __construct(RouterInterface $router, Security $security, bool $noEmbed = false, bool $noLinks = false)
-    {
-        $this->router = $router;
-        $this->security = $security;
-
-        parent::__construct($noEmbed, $noLinks);
-    }
 
 
     protected function getDtoClass()
@@ -37,30 +20,16 @@ class ProductHAL extends AbstractHAL
     }
 
 
-    public function getHAL()
-    {
-        if (false === $this->noLinks) {
-            $this->setLinks();
-        }
-
-        if (false === $this->noEmbed) {
-            $this->setEmbedded();
-        }
-
-        return parent::getHAL();
-    }
-
-
-    private function setEmbedded()
+    protected function setEmbedded()
     {
         $brandHAL = new BrandHAL($this->router, $this->security, true);
         $this->dto->addEmbedded([
-            'brand' => $this->HalifyEntity($this->dto->getEntity()->getBrand(), $brandHAL)
+            'brand' => $brandHAL->getHAL($this->dto->getEntity()->getBrand())
         ]);
     }
 
 
-    private function setLinks()
+    protected function setLinks()
     {
         $this->selfLink();
         if ($this->security->isGranted(User::USER_ADMIN)) {
