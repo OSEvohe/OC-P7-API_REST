@@ -32,7 +32,7 @@ class BrandDto extends AbstractDto
 
     /**
      * @SerializedName("_links")
-     * @Groups({"list_brand", "show_brand", "show_product"})
+     * @Groups({"list_brand", "show_brand", "show_product", "list_products"})
      */
     public function getLinks()
     {

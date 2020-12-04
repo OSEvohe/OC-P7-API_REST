@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\HAL\UserHAL;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,15 +18,31 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 class UserController extends AbstractController
 {
     /**
+     * @var UserHAL
+     */
+    private $userHAL;
+
+    /**
+     * UserController constructor.
+     * @param UserHAL $userHAL
+     */
+    public function __construct(UserHAL $userHAL)
+    {
+        $this->userHAL = $userHAL;
+    }
+
+
+    /**
      * List Users
      * @Route("/users", name="users_list", methods={"GET"})
+     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(User::class);
-        $users = $er->findAll();
 
-        return $this->json($users, Response::HTTP_OK, [], ['groups' => 'list_users']);
+        $users = $er->findAll();
+        return $this->json($this->userHAL->getHAL($users), Response::HTTP_OK, [], ['groups' => 'list_users']);
     }
 
 
@@ -37,7 +54,7 @@ class UserController extends AbstractController
      */
     public function read(User $user): JsonResponse
     {
-        return $this->json($user, Response::HTTP_OK, [], ['groups' => 'show_user']);
+        return $this->json($this->userHAL->getHAL($user), Response::HTTP_OK, [], ['groups' => 'show_user']);
     }
 
 

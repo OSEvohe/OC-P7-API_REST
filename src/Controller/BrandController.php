@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Dto\BrandDto;
 use App\Entity\Brand;
 use App\Form\BrandType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
+use App\Service\HAL\BrandHAL;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +21,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class BrandController extends AbstractController
 {
     /**
+     * @var BrandHAL
+     */
+    private $brandHAL;
+
+    /**
+     * BrandController constructor.
+     * @param BrandHAL $brandHAL
+     */
+    public function __construct(BrandHAL $brandHAL)
+    {
+        $this->brandHAL = $brandHAL;
+    }
+
+
+    /**
      * List Brands
      * @Route("/brands", name="brands_list", methods={"GET"})
      */
@@ -27,7 +44,7 @@ class BrandController extends AbstractController
         $er = $this->getDoctrine()->getRepository(Brand::class);
         $brands = $er->findAll();
 
-        return $this->json($brands, Response::HTTP_OK, [], ['groups' => ['list_brands']]);
+        return $this->json($this->brandHAL->getHAL($brands), Response::HTTP_OK, [], ['groups' => ['list_brands']]);
     }
 
 
@@ -39,7 +56,7 @@ class BrandController extends AbstractController
      */
     public function read(Brand $brand): JsonResponse
     {
-        return $this->json($brand, Response::HTTP_OK, [], ['groups' => ['show_brand']]);
+        return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_OK, [], ['groups' => ['show_brand']]);
     }
 
 
@@ -64,7 +81,7 @@ class BrandController extends AbstractController
 
         $em->persist($brand);
         $em->flush();
-        return $this->json($brand, Response::HTTP_CREATED, [], ['groups' => 'show_brand']);
+        return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_CREATED, [], ['groups' => 'show_brand']);
     }
 
 
@@ -89,7 +106,7 @@ class BrandController extends AbstractController
 
         $em->persist($brand);
         $em->flush();
-        return $this->json($brand, Response::HTTP_OK, [], ['groups' => 'show_brand']);
+        return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_OK, [], ['groups' => 'show_brand']);
     }
 
 

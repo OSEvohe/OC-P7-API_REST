@@ -6,8 +6,8 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
+use App\Service\HAL\ProductHAL;
 use App\Service\ManageProduct;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,20 +24,27 @@ class ProductController extends AbstractController
      * @var ManageProduct
      */
     private $manageProduct;
+    /**
+     * @var ProductHAL
+     */
+    private $productHAL;
 
 
     /**
      * ProductController constructor.
      * @param ManageProduct $manageProduct
+     * @param ProductHAL $productHAL
      */
-    public function __construct(ManageProduct $manageProduct)
+    public function __construct(ManageProduct $manageProduct, ProductHAL $productHAL)
     {
         $this->manageProduct = $manageProduct;
+        $this->productHAL = $productHAL;
     }
 
 
     /**
      * @Route("/products", name="products_list", methods={"GET"})
+     * @param ProductHAL $productHAL
      * @return JsonResponse
      */
     public function index(): JsonResponse
@@ -45,7 +52,7 @@ class ProductController extends AbstractController
         $er = $this->getDoctrine()->getRepository(Product::class);
         $products = $er->findAll();
 
-        return $this->json($products, Response::HTTP_OK, [], ['groups' => 'list_products']);
+        return $this->json($this->productHAL->getHAL($products), Response::HTTP_OK, [], ['groups' => 'list_products']);
     }
 
 
@@ -56,7 +63,7 @@ class ProductController extends AbstractController
      */
     public function read(Product $product): JsonResponse
     {
-        return $this->json($product, Response::HTTP_OK, [], ['groups' => 'show_product']);
+        return $this->json($this->productHAL->getHAL($product), Response::HTTP_OK, [], ['groups' => 'show_product']);
     }
 
 
@@ -78,7 +85,7 @@ class ProductController extends AbstractController
         }
 
         $this->manageProduct->create($product);
-        return $this->json($product, Response::HTTP_CREATED, [], ['groups' => 'show_product']);
+        return $this->json($this->productHAL->getHAL($product), Response::HTTP_CREATED, [], ['groups' => 'show_product']);
     }
 
 
@@ -100,7 +107,7 @@ class ProductController extends AbstractController
         }
 
         $this->manageProduct->update($product);
-        return $this->json($product, Response::HTTP_OK, [], ['groups' => 'show_product']);
+        return $this->json($this->productHAL->getHAL($product), Response::HTTP_OK, [], ['groups' => 'show_product']);
     }
 
 
