@@ -31,49 +31,39 @@ class CompanyHAL extends AbstractHAL
 
     private function selfLink()
     {
-        $this->dto->addLink(["self" =>
-            [
-                "href" => $this->router->generate("company_read", ['id' => $this->dto->getId()]),
-                "method" => "GET"
-            ]
+        $this->dto->addLink('self', [
+            'href' => $this->router->generate('company_read', ['id' => $this->dto->getId()]),
+            'method' => 'GET'
         ]);
     }
 
     private function updateLink()
     {
-        $this->dto->addLink(["update" =>
-            [
-                "href" => $this->router->generate("company_update", ['id' => $this->dto->getId()]),
-                "method" => "PATCH"
-            ]
+        $this->dto->addLink('update', [
+            'href' => $this->router->generate('company_update', ['id' => $this->dto->getId()]),
+            'method' => 'PATCH'
         ]);
     }
 
     private function replaceLink()
     {
-        $this->dto->addLink(["replace" =>
-            [
-                "href" => $this->router->generate("company_update", ['id' => $this->dto->getId()]),
-                "method" => "PUT"
-            ]
+        $this->dto->addLink('replace', [
+            'href' => $this->router->generate('company_update', ['id' => $this->dto->getId()]),
+            'method' => 'PUT'
         ]);
     }
 
     private function deleteLink()
     {
-        $this->dto->addLink(["delete" =>
-            [
-                "href" => $this->router->generate("company_update", ['id' => $this->dto->getId()]),
-                "method" => "DELETE"
-            ]
+        $this->dto->addLink('delete', [
+            'href' => $this->router->generate('company_update', ['id' => $this->dto->getId()]),
+            'method' => 'DELETE'
         ]);
     }
 
     protected function setEmbedded()
     {
-        $userHAL =  new UserHAL($this->router, $this->security, true);
-        $this->dto->addEmbedded([
-            'users' => $this->HalifyCollection($this->dto->getEntity()->getUsers(), $userHAL)
-        ]);
+        $userHAL = new UserHAL($this->router, $this->security, true);
+        $this->dto->addEmbedded('users', $this->HalifyCollection($this->dto->getEntity()->getUsers(), $userHAL));
     }
 }
