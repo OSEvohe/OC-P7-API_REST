@@ -5,7 +5,8 @@ namespace App\Service\HAL;
 
 
 use Doctrine\Common\Collections\Collection;
-use PhpParser\Node\Expr\Cast\Bool_;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Security;
 
 abstract class AbstractHAL
 {
@@ -18,21 +19,39 @@ abstract class AbstractHAL
     /** @var bool */
     protected $noLinks;
 
+    /** @var RouterInterface */
+    protected $router;
 
-    public function __construct(bool $noEmbed = false, bool $noLinks = false)
+    /** @var Security */
+    protected $security;
+
+
+    /**
+     * BrandHAL constructor.
+     * @param RouterInterface $router
+     * @param Security $security
+     * @param bool $noEmbed
+     * @param bool $noLinks
+     */
+    public function __construct(RouterInterface $router, Security $security, bool $noEmbed = false, bool $noLinks = false)
     {
+        $this->router = $router;
+        $this->security = $security;
+
         $this->dtoClass = $this->getDtoClass();
         $this->noEmbed = $noEmbed;
         $this->noLinks = $noLinks;
     }
 
-    /**
-     * @return string Name of the Dto class.
-     */
+
+    /** @return string Name of the Dto class. */
     abstract protected function getDtoClass();
-    /*
-     * ie : return SomeEntityDto::class
-     */
+
+    /** Set the Dto property used for _links */
+    abstract protected function setLinks();
+
+    /** set the Dto property used for _embedded */
+    abstract protected function setEmbedded();
 
 
      /** @param $entity
@@ -44,9 +63,24 @@ abstract class AbstractHAL
 
     /**
      * Set additional property (_link...) and return Dto object
+     * @param $entity
+     * @return mixed
      */
-    public function getHAL(){
-        return $this->dto;
+    public function getHAL($entity)
+    {
+        if (is_array($entity)) {
+            return $this->getArrayEntitiesHAL($entity);
+        } else {
+            return $this->getEntityHAL($entity);
+        }
+    }
+
+    public function getArrayEntitiesHAL(array $entities){
+        $arrayHAL = [];
+        foreach ($entities as $entity){
+            $arrayHAL[] = $this->getEntityHAL($entity);
+        }
+        return $arrayHAL;
     }
 
     /**
@@ -58,15 +92,29 @@ abstract class AbstractHAL
     protected function HalifyCollection (Collection $collection, AbstractHAL $entityHAL){
         $collectionHAL = [];
         foreach ($collection as $entity){
-            $entityHAL->setDto($entity);
-            $collectionHAL[] = $entityHAL->getHAL();
+            $collectionHAL[] = $entityHAL->getHAL($entity);
         }
 
         return $collectionHAL;
     }
 
-    protected function HalifyEntity ($entity, AbstractHAL $entityHAL){
-        $entityHAL->setDto($entity);
-        return $entityHAL->getHAL();
+    /**
+     * @param $entity
+     * @return mixed
+     */
+    private function getEntityHAL($entity)
+    {
+        $this->setDto($entity);
+
+        if (false === $this->noLinks) {
+            $this->setLinks();
+        }
+
+        if (false === $this->noEmbed) {
+            $this->setEmbedded();
+        }
+
+        return $this->dto;
     }
+
 }
