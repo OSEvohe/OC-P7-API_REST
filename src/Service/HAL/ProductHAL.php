@@ -23,9 +23,7 @@ class ProductHAL extends AbstractHAL
     protected function setEmbedded()
     {
         $brandHAL = new BrandHAL($this->router, $this->security, true);
-        $this->dto->addEmbedded([
-            'brand' => $brandHAL->getHAL($this->dto->getEntity()->getBrand())
-        ]);
+        $this->dto->addEmbedded('brand', $brandHAL->getHAL($this->dto->getEntity()->getBrand()));
     }
 
 
@@ -41,41 +39,33 @@ class ProductHAL extends AbstractHAL
 
     private function selfLink()
     {
-        $this->dto->addLink(["self" =>
-            [
-                "href" => $this->router->generate("product_read", ['id' => $this->dto->getId()]),
-                "method" => "GET"
-            ]
+        $this->dto->addLink('self', [
+            'href' => $this->router->generate('product_read', ['id' => $this->dto->getId()]),
+            'method' => 'GET'
         ]);
     }
 
     private function updateLink()
     {
-        $this->dto->addLink(["update" =>
-            [
-                "href" => $this->router->generate("product_update", ['id' => $this->dto->getId()]),
-                "method" => "PATCH"
-            ]
+        $this->dto->addLink('update', [
+            'href' => $this->router->generate('product_update', ['id' => $this->dto->getId()]),
+            'method' => 'PATCH'
         ]);
     }
 
     private function replaceLink()
     {
-        $this->dto->addLink(["replace" =>
-            [
-                "href" => $this->router->generate("product_update", ['id' => $this->dto->getId()]),
-                "method" => "PUT"
-            ]
+        $this->dto->addLink('replace', [
+            'href' => $this->router->generate('product_update', ['id' => $this->dto->getId()]),
+            'method' => 'PUT'
         ]);
     }
 
     private function deleteLink()
     {
-        $this->dto->addLink(["delete" =>
-            [
-                "href" => $this->router->generate("product_update", ['id' => $this->dto->getId()]),
-                "method" => "DELETE"
-            ]
+        $this->dto->addLink('delete', [
+                'href' => $this->router->generate('product_update', ['id' => $this->dto->getId()]),
+                'method' => 'DELETE'
         ]);
     }
 }

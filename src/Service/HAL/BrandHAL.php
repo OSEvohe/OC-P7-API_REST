@@ -22,9 +22,7 @@ class BrandHAL extends AbstractHAL
     protected function setEmbedded()
     {
         $productHAL = new ProductHAL($this->router, $this->security, true);
-        $this->dto->addEmbedded([
-            'products' => $this->HalifyCollection($this->dto->getEntity()->getProducts(), $productHAL)
-        ]);
+        $this->dto->addEmbedded('products', $this->HalifyCollection($this->dto->getEntity()->getProducts(), $productHAL));
     }
 
     protected function setLinks()
@@ -39,41 +37,37 @@ class BrandHAL extends AbstractHAL
 
     private function selfLink()
     {
-        $this->dto->addLink(["self" =>
+        $this->dto->addLink('self',
             [
-                "href" => $this->router->generate("brand_read", ['id' => $this->dto->getId()]),
-                "method" => "GET"
-            ]
-        ]);
+                'href' => $this->router->generate('brand_read', ['id' => $this->dto->getId()]),
+                'method' => 'GET'
+            ]);
     }
 
     private function updateLink()
     {
-        $this->dto->addLink(["update" =>
+        $this->dto->addLink('update',
             [
-                "href" => $this->router->generate("brand_update", ['id' => $this->dto->getId()]),
-                "method" => "PATCH"
-            ]
-        ]);
+                'href' => $this->router->generate('brand_update', ['id' => $this->dto->getId()]),
+                'method' => 'PATCH'
+            ]);
     }
 
     private function replaceLink()
     {
-        $this->dto->addLink(["replace" =>
+        $this->dto->addLink('replace',
             [
-                "href" => $this->router->generate("brand_update", ['id' => $this->dto->getId()]),
-                "method" => "PUT"
-            ]
-        ]);
+                'href' => $this->router->generate('brand_update', ['id' => $this->dto->getId()]),
+                'method' => 'PUT'
+            ]);
     }
 
     private function deleteLink()
     {
-        $this->dto->addLink(["delete" =>
+        $this->dto->addLink('delete',
             [
-                "href" => $this->router->generate("brand_update", ['id' => $this->dto->getId()]),
-                "method" => "DELETE"
-            ]
+                'href' => $this->router->generate('brand_update', ['id' => $this->dto->getId()]),
+                'method' => 'DELETE'
         ]);
     }
 }
