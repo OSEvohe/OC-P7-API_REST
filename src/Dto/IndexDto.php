@@ -3,36 +3,41 @@
 
 namespace App\Dto;
 
-
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-class BrandDto extends AbstractDto
+/**
+ * Class IndexDto
+ * @package App\Dto
+ *
+ * Generic DTO used for listing entity in _embedded
+ */
+class IndexDto extends AbstractDto
 {
     use LinksTrait;
     use EmbeddedTrait;
 
-
-    /**
-     * @Groups({"list_products", "show_product", "show_brand", "list_brands"})
-     */
-    public function getId(): int
-    {
-        return $this->entity->getId();
-    }
+    /** @var array */
+    private $page;
 
 
     /**
-     * @Groups({"list_products", "show_product", "show_brand", "list_brands"})
+     * @return mixed
+     * @Groups({"index"})
      */
-    public function getName(): string
+    public function getPage(): ?array
     {
-        return $this->entity->getName();
+        return $this->page;
     }
+
+    public function setPage(array $page){
+        $this->page = $page;
+    }
+
 
     /**
      * @SerializedName("_links")
-     * @Groups({"list_brands", "show_brand", "show_product", "list_products"})
+     * @Groups({"index"})
      */
     public function getLinks()
     {
@@ -40,7 +45,7 @@ class BrandDto extends AbstractDto
     }
 
     /**
-     * @Groups({"show_brand"})
+     * @Groups({"index"})
      * @SerializedName("_embedded")
      */
     public function getEmbedded()

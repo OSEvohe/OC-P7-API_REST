@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
-use App\Dto\BrandDto;
 use App\Entity\Brand;
 use App\Form\BrandType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\HAL\BrandHAL;
+use App\Service\HAL\IndexHAL;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,13 +38,14 @@ class BrandController extends AbstractController
     /**
      * List Brands
      * @Route("/brands", name="brands_list", methods={"GET"})
+     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(Brand::class);
         $brands = $er->findAll();
 
-        return $this->json($this->brandHAL->getHAL($brands), Response::HTTP_OK, [], ['groups' => ['list_brands']]);
+        return $this->json($this->brandHAL->getEntityListHAL($brands), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
     }
 
 

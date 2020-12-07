@@ -4,7 +4,9 @@
 namespace App\Service\HAL;
 
 
-use Doctrine\Common\Collections\Collection;
+use App\Dto\IndexDto;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -12,6 +14,7 @@ abstract class AbstractHAL
 {
     protected $dto;
     protected $dtoClass;
+    protected $dtoIndex;
 
     /** @var bool */
     protected $noEmbed;
@@ -25,22 +28,38 @@ abstract class AbstractHAL
     /** @var Security */
     protected $security;
 
+    /** @var Request */
+    private $request;
+
+    /** @var array */
+    protected $entityList;
+
+    /** @var AbstractHAL */
+    protected $entityListHAL;
+    /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
 
     /**
      * BrandHAL constructor.
      * @param RouterInterface $router
      * @param Security $security
+     * @param RequestStack $requestStack
      * @param bool $noEmbed
      * @param bool $noLinks
      */
-    public function __construct(RouterInterface $router, Security $security, bool $noEmbed = false, bool $noLinks = false)
+    public function __construct(RouterInterface $router, Security $security, RequestStack $requestStack, bool $noEmbed = false, bool $noLinks = false)
     {
         $this->router = $router;
         $this->security = $security;
+        $this->request = $requestStack->getCurrentRequest();
 
         $this->dtoClass = $this->getDtoClass();
         $this->noEmbed = $noEmbed;
         $this->noLinks = $noLinks;
+        $this->requestStack = $requestStack;
     }
 
 
@@ -52,6 +71,12 @@ abstract class AbstractHAL
 
     /** set the Dto property used for _embedded */
     abstract protected function setEmbedded();
+
+    abstract protected function setIndexLinks();
+
+    abstract protected function setIndexEmbedded();
+
+    abstract protected function setIndexPagination();
 
 
      /** @param $entity
@@ -68,28 +93,17 @@ abstract class AbstractHAL
      */
     public function getHAL($entity)
     {
-        if (is_array($entity)) {
-            return $this->getArrayEntitiesHAL($entity);
-        } else {
             return $this->getEntityHAL($entity);
-        }
-    }
-
-    public function getArrayEntitiesHAL(array $entities){
-        $arrayHAL = [];
-        foreach ($entities as $entity){
-            $arrayHAL[] = $this->getEntityHAL($entity);
-        }
-        return $arrayHAL;
     }
 
     /**
      * Halify every objects in a collection of entity
-     * @param Collection $collection a collection of entity
+     * @param $collection
      * @param AbstractHAL $entityHAL HALifier of the entity inside the collection
      * @return array
      */
-    protected function HalifyCollection (Collection $collection, AbstractHAL $entityHAL){
+    protected function HalifyCollection ($collection, AbstractHAL $entityHAL): array
+    {
         $collectionHAL = [];
         foreach ($collection as $entity){
             $collectionHAL[] = $entityHAL->getHAL($entity);
@@ -102,7 +116,7 @@ abstract class AbstractHAL
      * @param $entity
      * @return mixed
      */
-    private function getEntityHAL($entity)
+    protected function getEntityHAL($entity)
     {
         $this->setDto($entity);
 
@@ -115,6 +129,22 @@ abstract class AbstractHAL
         }
 
         return $this->dto;
+    }
+
+    public function getEntityListHAL($entityList): IndexDto
+    {
+        $this->dtoIndex = new IndexDto(null);
+        $this->entityList = $entityList;
+
+        $this->setIndexPagination();
+        $this->setIndexLinks();
+        $this->setIndexEmbedded();
+
+        return $this->dtoIndex;
+    }
+
+    public function getNewHAL($className, $noEmbed = false, $noLinks = false){
+        return new $className($this->router, $this->security, $this->requestStack, $noEmbed, $noLinks);
     }
 
 }

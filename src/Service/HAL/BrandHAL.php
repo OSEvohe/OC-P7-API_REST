@@ -21,7 +21,7 @@ class BrandHAL extends AbstractHAL
 
     protected function setEmbedded()
     {
-        $productHAL = new ProductHAL($this->router, $this->security, true);
+        $productHAL = $this->getNewHAL(ProductHAL::class, true);
         $this->dto->addEmbedded('products', $this->HalifyCollection($this->dto->getEntity()->getProducts(), $productHAL));
     }
 
@@ -68,6 +68,28 @@ class BrandHAL extends AbstractHAL
             [
                 'href' => $this->router->generate('brand_update', ['id' => $this->dto->getId()]),
                 'method' => 'DELETE'
+        ]);
+    }
+
+    protected function setIndexLinks()
+    {
+        $this->dtoIndex->addLink('first', ['href' => '']);
+        $this->dtoIndex->addLink('prev', ['href' => '']);
+        $this->dtoIndex->addLink('self', ['href' => '']);
+        $this->dtoIndex->addLink('next', ['href' => '']);
+        $this->dtoIndex->addLink('last', ['href' => '']);
+    }
+
+
+    protected function setIndexEmbedded()
+    {
+        $this->dtoIndex->addEmbedded('brands', $this->HalifyCollection($this->entityList, $this));
+    }
+
+    protected function setIndexPagination()
+    {
+        $this->dtoIndex->setPage([
+            'totalElements' => count($this->entityList)
         ]);
     }
 }
