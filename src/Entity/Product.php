@@ -61,17 +61,6 @@ class Product
      */
     private $description;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"show_product"})
-     * @Assert\Length (
-     *     min = 5,
-     *     max = 255,
-     *     minMessage = "Image path must be at least {{ limit }} characters long",
-     *     maxMessage = "Image path cannot be longer than {{ limit }} characters",
-     *     )
-     */
-    private $image;
 
     /**
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="products")
@@ -122,17 +111,6 @@ class Product
         return $this;
     }
 
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): self
-    {
-        $this->image = $image;
-
-        return $this;
-    }
 
     public function getBrand(): ?Brand
     {

@@ -51,15 +51,6 @@ class ProductDto extends AbstractDto
 
 
     /**
-     * @Groups({"show_product"})
-     */
-    public function getImage()
-    {
-        return $this->entity->getImage();
-    }
-
-
-    /**
      * @SerializedName("_link")
      * @Groups({"show_brand", "show_product", "list_products"})
      */
