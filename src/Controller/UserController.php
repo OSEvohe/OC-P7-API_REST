@@ -45,7 +45,7 @@ class UserController extends AbstractController
         $users = $er->findBy([],[], $limit, ($page-1)*$limit);
         $count = $er->count([]);
 
-        return $this->json($this->userHAL->getEntityListHAL($users, $count), Response::HTTP_OK, [], ['groups' => 'list_users']);
+        return $this->json($this->userHAL->getEntityListHAL($users, $count), Response::HTTP_OK, [], ['groups' => ['list_users', 'index']]);
     }
 
 

@@ -74,6 +74,6 @@ class UserHAL extends AbstractHAL
 
     protected function setIndexEmbedded()
     {
-        // TODO: Implement setIndexEmbedded() method.
+        $this->dtoIndex->addEmbedded('users', $this->HalifyCollection($this->entityList, $this));
     }
 }

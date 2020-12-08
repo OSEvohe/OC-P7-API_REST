@@ -47,7 +47,7 @@ class CompanyController extends AbstractController
         $company =  $er->findBy([],[], $limit, ($page-1)*$limit);
         $count = $er->count([]);
 
-        return $this->json($this->companyHAL->getEntityListHAL($company, $count), Response::HTTP_OK, [], ['groups' => 'list_company']);
+        return $this->json($this->companyHAL->getEntityListHAL($company, $count), Response::HTTP_OK, [], ['groups' => ['list_company', 'index']]);
     }
 
 

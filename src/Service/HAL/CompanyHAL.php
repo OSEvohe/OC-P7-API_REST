@@ -69,6 +69,6 @@ class CompanyHAL extends AbstractHAL
 
     protected function setIndexEmbedded()
     {
-        // TODO: Implement setIndexEmbedded() method.
+        $this->dtoIndex->addEmbedded('company', $this->HalifyCollection($this->entityList, $this));
     }
 }
