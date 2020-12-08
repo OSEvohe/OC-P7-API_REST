@@ -36,7 +36,7 @@ class CompanyController extends AbstractController
 
     /**
      * List Company
-     * @Route("/company/{page}/{limit}", name="company_list", methods={"GET"})
+     * @Route("/companies/{page}/{limit}", name="company_list", methods={"GET"})
      * @param int $page
      * @param int $limit
      * @return JsonResponse

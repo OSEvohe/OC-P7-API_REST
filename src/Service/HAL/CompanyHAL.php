@@ -63,7 +63,7 @@ class CompanyHAL extends AbstractHAL
 
     protected function setEmbedded()
     {
-        $userHAL = new UserHAL($this->router, $this->security, true);
+        $userHAL = $this->getNewHAL(UserHAL::class,true);
         $this->dto->addEmbedded('users', $this->HalifyCollection($this->dto->getEntity()->getUsers(), $userHAL));
     }
 
