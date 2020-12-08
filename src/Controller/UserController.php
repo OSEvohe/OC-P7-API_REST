@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\HAL\UserHAL;
+use App\Service\ManageEntities;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,18 +19,21 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
  */
 class UserController extends AbstractController
 {
-    /**
-     * @var UserHAL
-     */
+    /** @var UserHAL */
     private $userHAL;
+
+    /** @var ManageEntities */
+    private $manageEntities;
 
     /**
      * UserController constructor.
      * @param UserHAL $userHAL
+     * @param ManageEntities $manageEntities
      */
-    public function __construct(UserHAL $userHAL)
+    public function __construct(UserHAL $userHAL, ManageEntities $manageEntities)
     {
         $this->userHAL = $userHAL;
+        $this->manageEntities = $manageEntities;
     }
 
 
@@ -38,14 +43,12 @@ class UserController extends AbstractController
      * @param int $page
      * @param int $limit
      * @return JsonResponse
+     * @throws Exception
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
-        $er = $this->getDoctrine()->getRepository(User::class);
-        $users = $er->findBy([],[], $limit, ($page-1)*$limit);
-        $count = $er->count([]);
-
-        return $this->json($this->userHAL->getEntityListHAL($users, $count), Response::HTTP_OK, [], ['groups' => ['list_users', 'index']]);
+        $data = $this->manageEntities->list(User::class,$page, $limit);
+        return $this->json($this->userHAL->getEntityListHAL($data), Response::HTTP_OK, [], ['groups' => ['list_users', 'index']]);
     }
 
 

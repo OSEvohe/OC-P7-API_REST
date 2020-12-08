@@ -14,7 +14,6 @@ class BrandType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['empty_data' => ''])
-            ->add('logo')
         ;
     }
 
