@@ -7,73 +7,29 @@ namespace App\Service\HAL;
 use App\Dto\UserDto;
 use App\Entity\User;
 
+
 class UserHAL extends AbstractHAL
 {
-    /** @var UserDto */
-    protected $dto;
 
-
-    protected function getDtoClass()
+    protected function getDtoClass(): string
     {
         return UserDto::class;
     }
 
 
-    protected function setEmbedded()
+    protected function setEmbedded(): void
     {
-        $companyHAL = $this->getNewHAL(CompanyHAL::class,true);
-        $this->dto->addEmbedded('company', $companyHAL->getHAL($this->dto->getEntity()->getCompany()));
+        $this->setEmbeddedData($this->dto->getEntity()->getCompany(), CompanyHAL::class, 'company');
     }
 
 
     protected function setLinks()
     {
-        $this->selfLink();
-        if ($this->security->isGranted(User::USER_ADMIN) || $this->security->isGranted(User::USER_COMPANY_ADMIN)) {
-            $this->updateLink();
-            $this->replaceLink();
-            $this->deleteLink();
+        $this->addLink('self', 'read', 'GET');
+        if ($this->security->isGranted(User::USER_ADMIN)) {
+            $this->addLink('update', 'update', 'PATCH');
+            $this->addLink('replace', 'update', 'PUT');
+            $this->addLink('delete', 'delete', 'DELETE');
         }
-    }
-
-
-    private function selfLink()
-    {
-        $this->dto->addLink('self', [
-            'href' => $this->router->generate('user_read', ['id' => $this->dto->getId()]),
-            'method' => 'GET'
-        ]);
-    }
-
-
-    private function updateLink()
-    {
-        $this->dto->addLink('update', [
-            'href' => $this->router->generate('user_update', ['id' => $this->dto->getId()]),
-            'method' => 'PATCH'
-        ]);
-    }
-
-
-    private function replaceLink()
-    {
-        $this->dto->addLink('replace', [
-            'href' => $this->router->generate('user_update', ['id' => $this->dto->getId()]),
-            'method' => 'PUT'
-        ]);
-    }
-
-
-    private function deleteLink()
-    {
-        $this->dto->addLink('delete', [
-            'href' => $this->router->generate('user_update', ['id' => $this->dto->getId()]),
-            'method' => 'DELETE'
-        ]);
-    }
-
-    protected function setIndexEmbedded($fieldName = 'results')
-    {
-        parent::setIndexEmbedded('users');
     }
 }

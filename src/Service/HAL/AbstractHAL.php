@@ -4,7 +4,7 @@
 namespace App\Service\HAL;
 
 
-use App\Dto\IndexDto;
+use App\Entity\User;
 use App\Util\UtilHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -13,9 +13,10 @@ use Symfony\Component\Security\Core\Security;
 
 abstract class AbstractHAL
 {
+    use IndexEmbeddableTrait;
+
     protected $dto;
     protected $dtoClass;
-    protected $dtoIndex;
 
     /** @var bool */
     protected $noEmbed;
@@ -32,9 +33,6 @@ abstract class AbstractHAL
     /** @var Request */
     protected $request;
 
-    /** @var array */
-    protected $entityList;
-
     /** @var AbstractHAL */
     protected $entityListHAL;
     /**
@@ -42,6 +40,11 @@ abstract class AbstractHAL
      */
     protected $requestStack;
 
+    /** @return string Get the DTO class used by this object */
+    abstract protected function getDtoClass(): string;
+
+    /** Set _embedded field, can use setEmbeddedData methods with appropriate parameters */
+    abstract protected function setEmbedded(): void;
 
     /**
      * BrandHAL constructor.
@@ -56,31 +59,23 @@ abstract class AbstractHAL
         $this->router = $router;
         $this->security = $security;
         $this->request = $requestStack->getCurrentRequest();
-
-        $this->dtoClass = $this->getDtoClass();
         $this->noEmbed = $noEmbed;
         $this->noLinks = $noLinks;
         $this->requestStack = $requestStack;
+
+        $this->dtoClass = $this->getDtoClass();
     }
 
 
-    /** @return string Name of the Dto class. */
-    abstract protected function getDtoClass();
-
-    /** Set the Dto property used for _links */
-    abstract protected function setLinks();
-
-    /** set the Dto property used for _embedded */
-    abstract protected function setEmbedded();
-
-
-
-     /** @param $entity
+    /**
+     * @param $entity
      */
-    public function setDto($entity){
-        $dtoClass= $this->dtoClass;
+    public function setDto($entity)
+    {
+        $dtoClass = $this->dtoClass;
         $this->dto = new $dtoClass($entity);
     }
+
 
     /**
      * Set additional property (_link...) and return Dto object
@@ -88,31 +83,6 @@ abstract class AbstractHAL
      * @return mixed
      */
     public function getHAL($entity)
-    {
-            return $this->getEntityHAL($entity);
-    }
-
-    /**
-     * Halify every objects in a collection of entity
-     * @param $collection
-     * @param AbstractHAL $entityHAL HALifier of the entity inside the collection
-     * @return array
-     */
-    protected function HalifyCollection ($collection, AbstractHAL $entityHAL): array
-    {
-        $collectionHAL = [];
-        foreach ($collection as $entity){
-            $collectionHAL[] = $entityHAL->getHAL($entity);
-        }
-
-        return $collectionHAL;
-    }
-
-    /**
-     * @param $entity
-     * @return mixed
-     */
-    protected function getEntityHAL($entity)
     {
         $this->setDto($entity);
 
@@ -127,67 +97,57 @@ abstract class AbstractHAL
         return $this->dto;
     }
 
-    public function getEntityListHAL($entityList, $count): IndexDto
+
+    /**
+     * Halify every objects in a collection of entity
+     * @param $collection
+     * @param AbstractHAL $entityHAL HALifier of the entity inside the collection
+     * @return array
+     */
+    protected function HalifyCollection($collection, AbstractHAL $entityHAL): array
     {
-        $this->dtoIndex = new IndexDto(null);
-        $this->entityList = $entityList;
+        $collectionHAL = [];
+        foreach ($collection as $entity) {
+            $collectionHAL[] = $entityHAL->getHAL($entity);
+        }
 
-        $this->setIndexPagination($count);
-        $this->setIndexLinks($count);
-        $this->setIndexEmbedded();
-
-        return $this->dtoIndex;
+        return $collectionHAL;
     }
 
-    public function getNewHAL($className, $noEmbed = false, $noLinks = false){
+
+    public function getNewHAL($className, $noEmbed = false, $noLinks = false)
+    {
         return new $className($this->router, $this->security, $this->requestStack, $noEmbed, $noLinks);
     }
 
 
-    protected function setIndexPagination($count)
+    protected function setLinks()
     {
-        $page = $this->request->get('_route_params')['page'];
-        $limit = $this->request->get('_route_params')['limit'];
-        if ($count > $limit){
-            $totalPages = (floor($count / $limit)+1);
+        $this->addLink('self', 'read', 'GET');
+        if ($this->security->isGranted(User::USER_ADMIN)) {
+            $this->addLink('update', 'update', 'PATCH');
+            $this->addLink('replace', 'update', 'PUT');
+            $this->addLink('delete', 'delete', 'DELETE');
+        }
+    }
+
+    protected function addLink($rel, $action, $method)
+    {
+        $entityName = strtolower((new UtilHelper())->getShortClassName($this->dto->getEntity()));
+        $this->dto->addLink($rel,
+            [
+                'href' => $this->router->generate($entityName . '_' . $action, ['id' => $this->dto->getId()]),
+                'method' => $method
+            ]);
+    }
+
+    protected function setEmbeddedData($data, string $entityHALClass, string $embeddedFieldName = 'results')
+    {
+        $entityHAL = $this->getNewHAL($entityHALClass, true);
+        if (is_iterable($data)) {
+            $this->dto->addEmbedded($embeddedFieldName, $this->HalifyCollection($data, $entityHAL));
         } else {
-            $totalPages = 1;
+            $this->dto->addEmbedded($embeddedFieldName, $entityHAL->getHAL($data));
         }
-
-        $this->dtoIndex->setPage([
-            'size' => count($this->entityList),
-            'totalElements' => $count,
-            'totalPages' => $totalPages,
-            'number' => $page
-        ]);
-    }
-
-    protected function setIndexLinks($count)
-    {
-        $route = $this->request->get('_route');
-        $page = $this->request->get('_route_params')['page'];
-        $limit = $this->request->get('_route_params')['limit'];
-
-        $this->dtoIndex->addLink('first', ['href' => $this->router->generate($route, ['page' => 1, 'limit' => $limit])]);
-
-        if ($page > 1) {
-            $this->dtoIndex->addLink('prev', ['href' => $this->router->generate($route, ['page' => $page - 1, 'limit' => $limit])]);
-        }
-
-        $this->dtoIndex->addLink('self', ['href' => $this->request->getPathInfo()]);
-
-        if ($count > $page * $limit) {
-            $this->dtoIndex->addLink('next', ['href' => $this->router->generate($route, ['page' => $page + 1, 'limit' => $limit])]);
-        }
-
-        if ($count > $limit) {
-            $lastPage = (floor($count / $limit)+1);
-            $this->dtoIndex->addLink('last', ['href' => $this->router->generate($route, ['page' => $lastPage, 'limit' => $limit])]);
-        }
-    }
-
-    protected function setIndexEmbedded($fieldName = 'results')
-    {
-        $this->dtoIndex->addEmbedded($fieldName, $this->HalifyCollection($this->entityList, $this));
     }
 }
