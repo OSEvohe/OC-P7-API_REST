@@ -6,6 +6,7 @@ use App\Entity\Company;
 use App\Form\CompanyType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
+use App\Service\HAL\CompanyHAL;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,15 +20,34 @@ use Symfony\Component\Routing\Annotation\Route;
 class CompanyController extends AbstractController
 {
     /**
-     * List Company
-     * @Route("/company", name="company_list", methods={"GET"})
+     * @var CompanyHAL
      */
-    public function index(): JsonResponse
+    private $companyHAL;
+
+    /**
+     * CompanyController constructor.
+     * @param CompanyHAL $companyHAL
+     */
+    public function __construct(CompanyHAL $companyHAL)
+    {
+        $this->companyHAL = $companyHAL;
+    }
+
+
+    /**
+     * List Company
+     * @Route("/companies/{page}/{limit}", name="company_list", methods={"GET"})
+     * @param int $page
+     * @param int $limit
+     * @return JsonResponse
+     */
+    public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(Company::class);
-        $company = $er->findAll();
+        $company =  $er->findBy([],[], $limit, ($page-1)*$limit);
+        $count = $er->count([]);
 
-        return $this->json($company, Response::HTTP_OK, [], ['groups' => 'list_company']);
+        return $this->json($this->companyHAL->getEntityListHAL($company, $count), Response::HTTP_OK, [], ['groups' => ['list_company', 'index']]);
     }
 
 
@@ -39,7 +59,7 @@ class CompanyController extends AbstractController
      */
     public function read(Company $company): JsonResponse
     {
-        return $this->json($company, Response::HTTP_OK, [], ['groups' => 'show_company']);
+        return $this->json($this->companyHAL->getHAL($company), Response::HTTP_OK, [], ['groups' => 'show_company']);
     }
 
 
@@ -64,7 +84,7 @@ class CompanyController extends AbstractController
 
         $em->persist($company);
         $em->flush();
-        return $this->json($company, Response::HTTP_CREATED, [], ['groups' => 'show_company']);
+        return $this->json($this->companyHAL->getHAL($company), Response::HTTP_CREATED, [], ['groups' => 'show_company']);
     }
 
 
@@ -89,7 +109,7 @@ class CompanyController extends AbstractController
 
         $em->persist($company);
         $em->flush();
-        return $this->json($company, Response::HTTP_OK, [], ['groups' => 'show_company']);
+        return $this->json($this->companyHAL->getHAL($company), Response::HTTP_OK, [], ['groups' => 'show_company']);
     }
 
 

@@ -37,17 +37,6 @@ class Brand
      */
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"show_brand"})
-     * @Assert\Length (
-     *     min = 5,
-     *     max = 255,
-     *     minMessage = "Logo path must be at least {{ limit }} characters long",
-     *     maxMessage = "Logo path cannot be longer than {{ limit }} characters",
-     *     )
-     */
-    private $logo;
 
     /**
      * @ORM\OneToMany(targetEntity=Product::class, mappedBy="brand")
@@ -73,18 +62,6 @@ class Brand
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getLogo(): ?string
-    {
-        return $this->logo;
-    }
-
-    public function setLogo(?string $logo): self
-    {
-        $this->logo = $logo;
 
         return $this;
     }

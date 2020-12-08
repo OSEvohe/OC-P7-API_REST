@@ -17,18 +17,12 @@ class ExceptionSubscriber implements EventSubscriberInterface
     {
         $exception = $event->getThrowable();
 
-
         if ($exception instanceof NotFoundHttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
                 'message' => 'Resource not found'
             ];
-        } elseif ($exception instanceof ApiObjectNotFoundException) {
-            $data = [
-                'status' => $exception->getStatusCode(),
-                'message' => $exception->getMessage()
-            ];
-        } elseif ($exception instanceof HttpException) {
+        } elseif ($exception instanceof ApiObjectNotFoundException || $exception instanceof HttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
                 'message' => $exception->getMessage()
@@ -36,13 +30,12 @@ class ExceptionSubscriber implements EventSubscriberInterface
         } else {
             $data = [
                 'status' => 500,
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
+                'errors' => $exception->getTrace()
             ];
         }
 
-        $response = new ApiErrorResponse(($data['message']), [], $data['status']);
-
-        $event->setResponse($response);
+        $event->setResponse(new ApiErrorResponse(($data['message']), $data['errors'], $data['status']));
     }
 
     public static function getSubscribedEvents()

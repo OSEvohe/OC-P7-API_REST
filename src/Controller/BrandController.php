@@ -6,6 +6,8 @@ use App\Entity\Brand;
 use App\Form\BrandType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
+use App\Service\HAL\BrandHAL;
+use App\Service\HAL\IndexHAL;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,15 +21,34 @@ use Symfony\Component\Routing\Annotation\Route;
 class BrandController extends AbstractController
 {
     /**
-     * List Brands
-     * @Route("/brands", name="brands_list", methods={"GET"})
+     * @var BrandHAL
      */
-    public function index(): JsonResponse
+    private $brandHAL;
+
+    /**
+     * BrandController constructor.
+     * @param BrandHAL $brandHAL
+     */
+    public function __construct(BrandHAL $brandHAL)
+    {
+        $this->brandHAL = $brandHAL;
+    }
+
+
+    /**
+     * List Brands
+     * @Route("/brands/{page}/{limit}", name="brands_list", methods={"GET"})
+     * @param int $page
+     * @param int $limit
+     * @return JsonResponse
+     */
+    public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(Brand::class);
-        $brands = $er->findAll();
+        $brands = $er->findBy([],[], $limit, ($page-1)*$limit);
+        $count = $er->count([]);
 
-        return $this->json($brands, Response::HTTP_OK, [], ['groups' => ['list_brands']]);
+        return $this->json($this->brandHAL->getEntityListHAL($brands, $count), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
     }
 
 
@@ -39,7 +60,7 @@ class BrandController extends AbstractController
      */
     public function read(Brand $brand): JsonResponse
     {
-        return $this->json($brand, Response::HTTP_OK, [], ['groups' => ['show_brand']]);
+        return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_OK, [], ['groups' => ['show_brand']]);
     }
 
 
@@ -64,7 +85,7 @@ class BrandController extends AbstractController
 
         $em->persist($brand);
         $em->flush();
-        return $this->json($brand, Response::HTTP_CREATED, [], ['groups' => 'show_brand']);
+        return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_CREATED, [], ['groups' => 'show_brand']);
     }
 
 
@@ -89,7 +110,7 @@ class BrandController extends AbstractController
 
         $em->persist($brand);
         $em->flush();
-        return $this->json($brand, Response::HTTP_OK, [], ['groups' => 'show_brand']);
+        return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_OK, [], ['groups' => 'show_brand']);
     }
 
 
