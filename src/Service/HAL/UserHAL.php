@@ -72,8 +72,8 @@ class UserHAL extends AbstractHAL
         ]);
     }
 
-    protected function setIndexEmbedded()
+    protected function setIndexEmbedded($fieldName = 'results')
     {
-        $this->dtoIndex->addEmbedded('users', $this->HalifyCollection($this->entityList, $this));
+        parent::setIndexEmbedded('users');
     }
 }

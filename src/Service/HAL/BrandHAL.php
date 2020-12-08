@@ -71,9 +71,8 @@ class BrandHAL extends AbstractHAL
             ]);
     }
 
-
-    protected function setIndexEmbedded()
+    protected function setIndexEmbedded($fieldName = 'results')
     {
-        $this->dtoIndex->addEmbedded('brands', $this->HalifyCollection($this->entityList, $this));
+        parent::setIndexEmbedded('brands');
     }
 }

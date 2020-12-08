@@ -69,9 +69,8 @@ class ProductHAL extends AbstractHAL
         ]);
     }
 
-
-    protected function setIndexEmbedded()
+    protected function setIndexEmbedded($fieldName = 'results')
     {
-        $this->dtoIndex->addEmbedded('products', $this->HalifyCollection($this->entityList, $this));
+        parent::setIndexEmbedded('products');
     }
 }

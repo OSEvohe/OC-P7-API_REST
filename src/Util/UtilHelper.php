@@ -16,4 +16,13 @@ class UtilHelper
         } catch (ReflectionException $e) {
         }
     }
+
+    /**
+     * @param $dtoClass
+     * @return string
+     */
+    public function getEntityClassFromDtoClass($dtoClass): string
+    {
+        return strtolower(substr($this->getShortClassName($dtoClass),0,-3));
+    }
 }
