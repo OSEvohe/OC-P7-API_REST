@@ -5,7 +5,6 @@ namespace App\Service\HAL;
 
 
 use App\Dto\IndexDto;
-use App\Util\UtilHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -72,6 +71,8 @@ abstract class AbstractHAL
 
     /** set the Dto property used for _embedded */
     abstract protected function setEmbedded();
+
+    abstract protected function setIndexEmbedded();
 
 
      /** @param $entity
@@ -184,11 +185,4 @@ abstract class AbstractHAL
             $this->dtoIndex->addLink('last', ['href' => $this->router->generate($route, ['page' => $lastPage, 'limit' => $limit])]);
         }
     }
-
-    protected function setIndexEmbedded()
-    {
-        $this->dtoIndex->addEmbedded('results', $this->HalifyCollection($this->entityList, $this));
-    }
-
-
 }
