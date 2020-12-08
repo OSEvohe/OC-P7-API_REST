@@ -36,14 +36,18 @@ class CompanyController extends AbstractController
 
     /**
      * List Company
-     * @Route("/company", name="company_list", methods={"GET"})
+     * @Route("/company/{page}/{limit}", name="company_list", methods={"GET"})
+     * @param int $page
+     * @param int $limit
+     * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(Company::class);
-        $company = $er->findAll();
+        $company =  $er->findBy([],[], $limit, ($page-1)*$limit);
+        $count = $er->count([]);
 
-        return $this->json($this->companyHAL->getHAL($company), Response::HTTP_OK, [], ['groups' => 'list_company']);
+        return $this->json($this->companyHAL->getEntityListHAL($company, $count), Response::HTTP_OK, [], ['groups' => 'list_company']);
     }
 
 

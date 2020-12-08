@@ -69,23 +69,9 @@ class ProductHAL extends AbstractHAL
         ]);
     }
 
-    protected function setIndexLinks()
-    {
-        $this->dtoIndex->addLink('first', ['href' => '']);
-        $this->dtoIndex->addLink('prev', ['href' => '']);
-        $this->dtoIndex->addLink('self', ['href' => '']);
-        $this->dtoIndex->addLink('next', ['href' => '']);
-        $this->dtoIndex->addLink('last', ['href' => '']);
-    }
-
 
     protected function setIndexEmbedded()
     {
         $this->dtoIndex->addEmbedded('products', $this->HalifyCollection($this->entityList, $this));
-    }
-
-    protected function setIndexPagination()
-    {
-        // TODO: Implement setIndexPagination() method.
     }
 }

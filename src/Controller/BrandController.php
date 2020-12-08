@@ -37,15 +37,18 @@ class BrandController extends AbstractController
 
     /**
      * List Brands
-     * @Route("/brands", name="brands_list", methods={"GET"})
+     * @Route("/brands/{page}/{limit}", name="brands_list", methods={"GET"})
+     * @param int $page
+     * @param int $limit
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(Brand::class);
-        $brands = $er->findAll();
+        $brands = $er->findBy([],[], $limit, ($page-1)*$limit);
+        $count = $er->count([]);
 
-        return $this->json($this->brandHAL->getEntityListHAL($brands), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
+        return $this->json($this->brandHAL->getEntityListHAL($brands, $count), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
     }
 
 

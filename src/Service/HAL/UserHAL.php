@@ -72,18 +72,8 @@ class UserHAL extends AbstractHAL
         ]);
     }
 
-    protected function setIndexLinks()
-    {
-        // TODO: Implement setIndexLinks() method.
-    }
-
     protected function setIndexEmbedded()
     {
         // TODO: Implement setIndexEmbedded() method.
-    }
-
-    protected function setIndexPagination()
-    {
-        // TODO: Implement setIndexPagination() method.
     }
 }

@@ -34,15 +34,18 @@ class UserController extends AbstractController
 
     /**
      * List Users
-     * @Route("/users", name="users_list", methods={"GET"})
+     * @Route("/users/{page}/{limit}", name="users_list", methods={"GET"})
+     * @param int $page
+     * @param int $limit
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(User::class);
+        $users = $er->findBy([],[], $limit, ($page-1)*$limit);
+        $count = $er->count([]);
 
-        $users = $er->findAll();
-        return $this->json($this->userHAL->getHAL($users), Response::HTTP_OK, [], ['groups' => 'list_users']);
+        return $this->json($this->userHAL->getEntityListHAL($users, $count), Response::HTTP_OK, [], ['groups' => 'list_users']);
     }
 
 

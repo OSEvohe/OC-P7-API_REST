@@ -43,15 +43,18 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/products", name="products_list", methods={"GET"})
+     * @Route("/products/{page}/{limit}", name="products_list", methods={"GET"})
+     * @param int $page
+     * @param int $limit
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $er = $this->getDoctrine()->getRepository(Product::class);
-        $products = $er->findAll();
+        $products = $er->findBy([],[], $limit, ($page-1)*$limit);
+        $count = $er->count([]);
 
-        return $this->json($this->productHAL->getEntityListHAL($products), Response::HTTP_OK, [], ['groups' => ['list_products', 'index']]);
+        return $this->json($this->productHAL->getEntityListHAL($products, $count), Response::HTTP_OK, [], ['groups' => ['list_products', 'index']]);
     }
 
 

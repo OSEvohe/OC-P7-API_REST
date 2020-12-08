@@ -67,18 +67,8 @@ class CompanyHAL extends AbstractHAL
         $this->dto->addEmbedded('users', $this->HalifyCollection($this->dto->getEntity()->getUsers(), $userHAL));
     }
 
-    protected function setIndexLinks()
-    {
-        // TODO: Implement setIndexLinks() method.
-    }
-
     protected function setIndexEmbedded()
     {
         // TODO: Implement setIndexEmbedded() method.
-    }
-
-    protected function setIndexPagination()
-    {
-        // TODO: Implement setIndexPagination() method.
     }
 }

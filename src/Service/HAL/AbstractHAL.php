@@ -29,7 +29,7 @@ abstract class AbstractHAL
     protected $security;
 
     /** @var Request */
-    private $request;
+    protected $request;
 
     /** @var array */
     protected $entityList;
@@ -72,11 +72,7 @@ abstract class AbstractHAL
     /** set the Dto property used for _embedded */
     abstract protected function setEmbedded();
 
-    abstract protected function setIndexLinks();
-
     abstract protected function setIndexEmbedded();
-
-    abstract protected function setIndexPagination();
 
 
      /** @param $entity
@@ -131,13 +127,13 @@ abstract class AbstractHAL
         return $this->dto;
     }
 
-    public function getEntityListHAL($entityList): IndexDto
+    public function getEntityListHAL($entityList, $count): IndexDto
     {
         $this->dtoIndex = new IndexDto(null);
         $this->entityList = $entityList;
 
-        $this->setIndexPagination();
-        $this->setIndexLinks();
+        $this->setIndexPagination($count);
+        $this->setIndexLinks($count);
         $this->setIndexEmbedded();
 
         return $this->dtoIndex;
@@ -145,6 +141,50 @@ abstract class AbstractHAL
 
     public function getNewHAL($className, $noEmbed = false, $noLinks = false){
         return new $className($this->router, $this->security, $this->requestStack, $noEmbed, $noLinks);
+    }
+
+
+    protected function setIndexPagination($count)
+    {
+        $page = $this->request->get('_route_params')['page'];
+        $limit = $this->request->get('_route_params')['limit'];
+        if ($count > $limit){
+            $totalPages = (floor($count / $limit)+1);
+        } else {
+            $totalPages = 1;
+        }
+
+        $this->dtoIndex->setPage([
+            'size' => count($this->entityList),
+            'totalElements' => $count,
+            'totalPages' => $totalPages,
+            'number' => $page
+        ]);
+    }
+
+    protected function setIndexLinks($count)
+    {
+        $route = $this->request->get('_route');
+        $page = $this->request->get('_route_params')['page'];
+        $limit = $this->request->get('_route_params')['limit'];
+
+        $this->dtoIndex->addLink('first', ['href' => $this->router->generate($route, ['page' => 1, 'limit' => $limit])]);
+
+        if ($page > 1) {
+            $this->dtoIndex->addLink('prev', ['href' => $this->router->generate($route, ['page' => $page - 1, 'limit' => $limit])]);
+        }
+
+        $this->dtoIndex->addLink('self', ['href' => $this->request->getPathInfo()]);
+
+        if ($count > $page * $limit) {
+            $this->dtoIndex->addLink('next', ['href' => $this->router->generate($route, ['page' => $page + 1, 'limit' => $limit])]);
+        }
+
+        if ($count > $limit) {
+            $lastPage = (floor($count / $limit)+1);
+            $this->dtoIndex->addLink('last', ['href' => $this->router->generate($route, ['page' => $lastPage, 'limit' => $limit])]);
+        }
+
     }
 
 }

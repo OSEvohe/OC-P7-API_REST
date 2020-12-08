@@ -16,7 +16,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event)
     {
         $exception = $event->getThrowable();
-
+        $data['errors'] = [];
 
         if ($exception instanceof NotFoundHttpException) {
             $data = [
@@ -36,11 +36,12 @@ class ExceptionSubscriber implements EventSubscriberInterface
         } else {
             $data = [
                 'status' => 500,
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
+                'errors' => $exception->getTrace()
             ];
         }
 
-        $response = new ApiErrorResponse(($data['message']), [], $data['status']);
+        $response = new ApiErrorResponse(($data['message']), $data['errors'], $data['status']);
 
         $event->setResponse($response);
     }
