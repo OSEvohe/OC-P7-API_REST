@@ -43,7 +43,7 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route("/products/", name="products_list", methods={"GET"})
+     * @Route("/products/{page}/{limit}", name="products_list", methods={"GET"})
      * @param int $page
      * @param int $limit
      * @return JsonResponse
