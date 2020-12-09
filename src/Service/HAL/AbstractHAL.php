@@ -4,7 +4,7 @@
 namespace App\Service\HAL;
 
 
-use App\Entity\User;
+use App\Entity\Company;
 use App\Util\UtilHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -124,7 +124,7 @@ abstract class AbstractHAL
     protected function setLinks()
     {
         $this->addLink('self', 'read', 'GET');
-        if ($this->security->isGranted(User::USER_ADMIN)) {
+        if ($this->security->isGranted(Company::USER_ADMIN)) {
             $this->addLink('update', 'update', 'PATCH');
             $this->addLink('replace', 'update', 'PUT');
             $this->addLink('delete', 'delete', 'DELETE');
