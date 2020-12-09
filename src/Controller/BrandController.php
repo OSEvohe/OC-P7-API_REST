@@ -7,8 +7,9 @@ use App\Form\BrandType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\HAL\BrandHAL;
-use App\Service\HAL\IndexHAL;
+use App\Service\ManageEntities;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,18 +21,21 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BrandController extends AbstractController
 {
-    /**
-     * @var BrandHAL
-     */
+    /** @var BrandHAL */
     private $brandHAL;
+
+    /** @var ManageEntities */
+    private $manageEntities;
 
     /**
      * BrandController constructor.
      * @param BrandHAL $brandHAL
+     * @param ManageEntities $manageEntities
      */
-    public function __construct(BrandHAL $brandHAL)
+    public function __construct(BrandHAL $brandHAL, ManageEntities $manageEntities)
     {
         $this->brandHAL = $brandHAL;
+        $this->manageEntities = $manageEntities;
     }
 
 
@@ -41,14 +45,12 @@ class BrandController extends AbstractController
      * @param int $page
      * @param int $limit
      * @return JsonResponse
+     * @throws Exception
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
-        $er = $this->getDoctrine()->getRepository(Brand::class);
-        $brands = $er->findBy([],[], $limit, ($page-1)*$limit);
-        $count = $er->count([]);
-
-        return $this->json($this->brandHAL->getEntityListHAL($brands, $count), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
+        $data = $this->manageEntities->list(Brand::class,$page, $limit);
+        return $this->json($this->brandHAL->getEntityListHAL($data, 'brands'), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
     }
 
 
@@ -83,8 +85,7 @@ class BrandController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $em->persist($brand);
-        $em->flush();
+        $this->manageEntities->save($brand);
         return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_CREATED, [], ['groups' => 'show_brand']);
     }
 
@@ -108,8 +109,7 @@ class BrandController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $em->persist($brand);
-        $em->flush();
+        $this->manageEntities->save($brand);
         return $this->json($this->brandHAL->getHAL($brand), Response::HTTP_OK, [], ['groups' => 'show_brand']);
     }
 
@@ -124,8 +124,7 @@ class BrandController extends AbstractController
     public function delete(Brand $brand, EntityManagerInterface $em): JsonResponse
     {
         $id = $brand->getId();
-        $em->remove($brand);
-        $em->flush();
+        $this->manageEntities->delete($brand);
 
         return $this->json("Brand #".$id." deleted!",Response::HTTP_OK);
     }

@@ -18,7 +18,6 @@ class ProductType extends AbstractType
             ->add('name', TextType::class, ['empty_data' => ''])
             ->add('price', TextType::class,['empty_data' => ''])
             ->add('description', TextType::class,['empty_data' => ''])
-            ->add('image', TextType::class)
             ->add('brand', EntityType::class,['class' => Brand::class, 'empty_data' => ''])
         ;
     }

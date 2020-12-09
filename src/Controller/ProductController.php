@@ -7,7 +7,8 @@ use App\Form\ProductType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\HAL\ProductHAL;
-use App\Service\ManageProduct;
+use App\Service\ManageEntities;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,46 +21,42 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProductController extends AbstractController
 {
-    /**
-     * @var ManageProduct
-     */
-    private $manageProduct;
-    /**
-     * @var ProductHAL
-     */
+    /** @var ManageEntities */
+    private $manageEntities;
+
+    /** @var ProductHAL */
     private $productHAL;
 
 
     /**
-     * ProductController constructor.
-     * @param ManageProduct $manageProduct
+     * @param ManageEntities $manageProduct
      * @param ProductHAL $productHAL
      */
-    public function __construct(ManageProduct $manageProduct, ProductHAL $productHAL)
+    public function __construct(ManageEntities $manageProduct, ProductHAL $productHAL)
     {
-        $this->manageProduct = $manageProduct;
+        $this->manageEntities = $manageProduct;
         $this->productHAL = $productHAL;
     }
 
 
     /**
      * @Route("/products/{page}/{limit}", name="products_list", methods={"GET"})
+     *
      * @param int $page
      * @param int $limit
      * @return JsonResponse
+     * @throws Exception
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
-        $er = $this->getDoctrine()->getRepository(Product::class);
-        $products = $er->findBy([],[], $limit, ($page-1)*$limit);
-        $count = $er->count([]);
-
-        return $this->json($this->productHAL->getEntityListHAL($products, $count), Response::HTTP_OK, [], ['groups' => ['list_products', 'index']]);
+        $data = $this->manageEntities->list(Product::class,$page, $limit);
+        return $this->json($this->productHAL->getEntityListHAL($data, 'products'), Response::HTTP_OK, [], ['groups' => ['list_products', 'index']]);
     }
 
 
     /**
      * @Route ("/product/{id}", name="product_read", methods={"GET"})
+     *
      * @param Product $product
      * @return JsonResponse
      */
@@ -70,7 +67,7 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route ("/product", name="product_create", methods={"POST"} )
+     * @Route ("/product/", name="product_create", methods={"POST"} )
      *
      * @param Request $request
      * @param FormHelper $formHelper
@@ -86,7 +83,7 @@ class ProductController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $this->manageProduct->create($product);
+        $this->manageEntities->save($product);
         return $this->json($this->productHAL->getHAL($product), Response::HTTP_CREATED, [], ['groups' => 'show_product']);
     }
 
@@ -108,7 +105,7 @@ class ProductController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $this->manageProduct->update($product);
+        $this->manageEntities->save($product);
         return $this->json($this->productHAL->getHAL($product), Response::HTTP_OK, [], ['groups' => 'show_product']);
     }
 
@@ -124,7 +121,7 @@ class ProductController extends AbstractController
     public function delete(Product $product): JsonResponse
     {
         $id = $product->getId();
-        $this->manageProduct->delete($product);
+        $this->manageEntities->delete($product);
 
         return $this->json("Product #".$id." deleted!",Response::HTTP_OK);
     }

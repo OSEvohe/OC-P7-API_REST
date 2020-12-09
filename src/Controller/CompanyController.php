@@ -7,6 +7,7 @@ use App\Form\CompanyType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\HAL\CompanyHAL;
+use App\Service\ManageEntities;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,18 +20,21 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CompanyController extends AbstractController
 {
-    /**
-     * @var CompanyHAL
-     */
+    /** @var CompanyHAL */
     private $companyHAL;
+
+    /** @var ManageEntities */
+    private $manageEntities;
 
     /**
      * CompanyController constructor.
      * @param CompanyHAL $companyHAL
+     * @param ManageEntities $manageEntities
      */
-    public function __construct(CompanyHAL $companyHAL)
+    public function __construct(CompanyHAL $companyHAL, ManageEntities $manageEntities)
     {
         $this->companyHAL = $companyHAL;
+        $this->manageEntities = $manageEntities;
     }
 
 
@@ -40,14 +44,12 @@ class CompanyController extends AbstractController
      * @param int $page
      * @param int $limit
      * @return JsonResponse
+     * @throws \Exception
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
-        $er = $this->getDoctrine()->getRepository(Company::class);
-        $company =  $er->findBy([],[], $limit, ($page-1)*$limit);
-        $count = $er->count([]);
-
-        return $this->json($this->companyHAL->getEntityListHAL($company, $count), Response::HTTP_OK, [], ['groups' => ['list_company', 'index']]);
+        $data = $this->manageEntities->list(Company::class,$page, $limit);
+        return $this->json($this->companyHAL->getEntityListHAL($data, 'companies'), Response::HTTP_OK, [], ['groups' => ['list_companies', 'index']]);
     }
 
 
@@ -82,8 +84,7 @@ class CompanyController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $em->persist($company);
-        $em->flush();
+        $this->manageEntities->save($company);
         return $this->json($this->companyHAL->getHAL($company), Response::HTTP_CREATED, [], ['groups' => 'show_company']);
     }
 
@@ -107,8 +108,7 @@ class CompanyController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $em->persist($company);
-        $em->flush();
+        $this->manageEntities->save($company);
         return $this->json($this->companyHAL->getHAL($company), Response::HTTP_OK, [], ['groups' => 'show_company']);
     }
 
@@ -123,8 +123,7 @@ class CompanyController extends AbstractController
     public function delete(Company $company, EntityManagerInterface $em): JsonResponse
     {
         $id = $company->getId();
-        $em->remove($company);
-        $em->flush();
+        $this->manageEntities->delete($company);
 
         return $this->json("Brand #".$id." deleted!",Response::HTTP_OK);
     }
