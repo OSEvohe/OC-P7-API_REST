@@ -49,7 +49,7 @@ class CompanyController extends AbstractController
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $data = $this->manageEntities->list(Company::class,$page, $limit);
-        return $this->json($this->companyHAL->getEntityListHAL($data), Response::HTTP_OK, [], ['groups' => ['list_company', 'index']]);
+        return $this->json($this->companyHAL->getEntityListHAL($data, 'companies'), Response::HTTP_OK, [], ['groups' => ['list_companies', 'index']]);
     }
 
 

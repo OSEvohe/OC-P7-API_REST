@@ -48,7 +48,7 @@ class UserController extends AbstractController
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $data = $this->manageEntities->list(User::class,$page, $limit);
-        return $this->json($this->userHAL->getEntityListHAL($data), Response::HTTP_OK, [], ['groups' => ['list_users', 'index']]);
+        return $this->json($this->userHAL->getEntityListHAL($data, 'users'), Response::HTTP_OK, [], ['groups' => ['list_users', 'index']]);
     }
 
 

@@ -50,7 +50,7 @@ class ProductController extends AbstractController
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $data = $this->manageEntities->list(Product::class,$page, $limit);
-        return $this->json($this->productHAL->getEntityListHAL($data), Response::HTTP_OK, [], ['groups' => ['list_products', 'index']]);
+        return $this->json($this->productHAL->getEntityListHAL($data, 'products'), Response::HTTP_OK, [], ['groups' => ['list_products', 'index']]);
     }
 
 
@@ -67,7 +67,7 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route ("/product", name="product_create", methods={"POST"} )
+     * @Route ("/product/", name="product_create", methods={"POST"} )
      *
      * @param Request $request
      * @param FormHelper $formHelper

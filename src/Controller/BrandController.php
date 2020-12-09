@@ -50,7 +50,7 @@ class BrandController extends AbstractController
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $data = $this->manageEntities->list(Brand::class,$page, $limit);
-        return $this->json($this->brandHAL->getEntityListHAL($data), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
+        return $this->json($this->brandHAL->getEntityListHAL($data, 'brands'), Response::HTTP_OK, [], ['groups' => ['list_brands', 'index']]);
     }
 
 
