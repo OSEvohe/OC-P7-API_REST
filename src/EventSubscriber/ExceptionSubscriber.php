@@ -20,12 +20,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
         if ($exception instanceof NotFoundHttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
-                'message' => 'Resource not found'
+                'message' => 'No resource available at this URI',
+                'errors' => [$exception->getMessage()]
             ];
         } elseif ($exception instanceof ApiObjectNotFoundException || $exception instanceof HttpException) {
             $data = [
                 'status' => $exception->getStatusCode(),
-                'message' => $exception->getMessage()
+                'message' => 'Resource not found',
+                'errors' => [$exception->getMessage()]
             ];
         } else {
             $data = [
