@@ -19,8 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User
 {
-    const USER_COMPANY_ADMIN = 'ROLE_COMPANY_ADMIN';
-    const USER_ADMIN = 'ROLE_ADMIN';
 
     /**
      * @ORM\Id

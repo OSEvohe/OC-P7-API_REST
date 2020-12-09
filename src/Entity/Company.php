@@ -19,6 +19,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Company implements UserInterface
 {
+    const USER_COMPANY = 'ROLE_COMPANY';
+    const USER_ADMIN = 'ROLE_ADMIN';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
