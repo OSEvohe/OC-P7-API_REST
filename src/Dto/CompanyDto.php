@@ -27,6 +27,13 @@ class CompanyDto extends AbstractDto
     }
 
 
+    /** @Groups({"show_company", "list_companies"}) */
+    public function getUsername(): string
+    {
+        return (string)$this->entity->getUsername();
+    }
+
+
     /**
      * @SerializedName("_links")
      * @Groups({"list_companies", "show_company", "show_user", "list_users"})
