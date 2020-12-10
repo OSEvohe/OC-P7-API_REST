@@ -23,11 +23,17 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 'message' => 'No resource available at this URI',
                 'errors' => [$exception->getMessage()]
             ];
-        } elseif ($exception instanceof ApiObjectNotFoundException || $exception instanceof HttpException) {
+        } elseif ($exception instanceof ApiObjectNotFoundException) {
             $data = [
                 'status' => $exception->getStatusCode(),
                 'message' => 'Resource not found',
                 'errors' => [$exception->getMessage()]
+            ];
+        } elseif ($exception instanceof HttpException) {
+            $data = [
+                'status' => $exception->getStatusCode(),
+                'message' => $exception->getMessage(),
+                'errors' => []
             ];
         } else {
             $data = [

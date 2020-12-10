@@ -14,7 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity (fields="username", message="This username is already used")
  * @UniqueEntity (fields="email", message="This email address is already used")
  */
 class User
@@ -42,7 +41,7 @@ class User
      * @Groups({"show_user"})
      * @Assert\NotBlank(message="Firstname is missing or empty")
      * @Assert\Length (
-     *     min = 5,
+     *     min = 2,
      *     max = 100,
      *     minMessage = "First name must be at least {{ limit }} characters long",
      *     maxMessage = "First name cannot be longer than {{ limit }} characters",
@@ -55,7 +54,7 @@ class User
      * @Groups({"show_user"})
      * @Assert\NotBlank(message="Lastname is missing or empty")
      * @Assert\Length (
-     *     min = 5,
+     *     min = 2,
      *     max = 100,
      *     minMessage = "Last name must be at least {{ limit }} characters long",
      *     maxMessage = "Last name cannot be longer than {{ limit }} characters",

@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
+use App\Service\DataHelper;
+use App\Service\FormHelper;
 use App\Service\HAL\UserHAL;
 use App\Service\ManageEntities;
 use Exception;
@@ -69,11 +72,21 @@ class UserController extends AbstractController
      * @Route ("/user", name="user_create", methods={"POST"} )
      *
      * @param Request $request
+     * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
      * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Create a new user in database"]);
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+
+        if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()))) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $this->manageEntities->save($user);
+        return $this->json($this->userHAL->getHAL($user), Response::HTTP_CREATED, [], ['groups' => 'show_user']);
     }
 
 
@@ -83,11 +96,20 @@ class UserController extends AbstractController
      *
      * @param User $user
      * @param Request $request
+     * @param FormHelper $formHelper
+     * @param DataHelper $dataHelper
      * @return JsonResponse
      */
-    public function update(User $user, Request $request): JsonResponse
+    public function update(User $user, Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
-        return new JsonResponse(["TODO" => "Update user in database"]);
+        $form = $this->createForm(UserType::class, $user);
+
+        if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()), $request->isMethod("PUT"))) {
+            return $formHelper->errorsResponse($form);
+        }
+
+        $this->manageEntities->save($user);
+        return $this->json($this->userHAL->getHAL($user), Response::HTTP_OK, [], ['groups' => 'show_user']);
     }
 
 
@@ -99,6 +121,9 @@ class UserController extends AbstractController
      */
     public function delete(User $user): JsonResponse
     {
-        return new JsonResponse(["TODO" => 'delete user from database']);
+        $id = $user->getId();
+        $this->manageEntities->delete($user);
+
+        return $this->json("User #".$id." deleted!",Response::HTTP_OK);
     }
 }

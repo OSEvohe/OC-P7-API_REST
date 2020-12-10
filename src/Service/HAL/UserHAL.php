@@ -26,7 +26,7 @@ class UserHAL extends AbstractHAL
     protected function setLinks()
     {
         $this->addLink('self', 'read', 'GET');
-        if ($this->security->isGranted(Company::USER_ADMIN)) {
+        if ($this->security->isGranted(Company::SUPER_ADMIN)) {
             $this->addLink('update', 'update', 'PATCH');
             $this->addLink('replace', 'update', 'PUT');
             $this->addLink('delete', 'delete', 'DELETE');

@@ -15,12 +15,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CompanyRepository::class)
+ * @UniqueEntity (fields="username", message="This username is already used")
  * @UniqueEntity (fields = "name", message = "This company name is already used")
  */
 class Company implements UserInterface
 {
-    const USER_COMPANY = 'ROLE_COMPANY';
-    const USER_ADMIN = 'ROLE_ADMIN';
+    const SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     /**
      * @ORM\Id
@@ -65,8 +65,6 @@ class Company implements UserInterface
 
     /**
      * @var string $plainPassword the plain password, not stored
-     * @UserPassword()
-     * @Assert\NotBlank(message = "Password is missing or empty")
      * @Assert\Length(
      *     max = 255,
      *     maxMessage="Password cannot be longer than {{limit}} characters"
@@ -224,6 +222,10 @@ class Company implements UserInterface
      */
     public function getPlainPassword(): string
     {
+        if (null === $this->plainPassword){
+            return '';
+        }
+
         return $this->plainPassword;
     }
 

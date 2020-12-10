@@ -34,7 +34,6 @@ class UserFixtures extends Fixture
             ->setName('Company_test')
             ->setUsername('user1');
         $company->setPassword($this->passwordEncoder->encodePassword($company, 'PassWord01!'));
-        $company->setRoles([Company::USER_COMPANY]);
         $manager->persist($company);
 
         $bilemo = new Company();
@@ -42,7 +41,7 @@ class UserFixtures extends Fixture
             ->setName('Bilemo')
             ->setUsername('admin');
         $bilemo->setPassword($this->passwordEncoder->encodePassword($bilemo, 'superPassword34!'));
-        $bilemo->setRoles([Company::USER_ADMIN]);
+        $bilemo->setRoles([Company::SUPER_ADMIN]);
 
 
         $manager->persist($bilemo);
