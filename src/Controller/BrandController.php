@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Brand;
+use App\Entity\Company;
 use App\Exception\ApiCannotDeleteException;
 use App\Form\BrandType;
 use App\Service\DataHelper;
@@ -79,6 +80,8 @@ class BrandController extends AbstractController
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper,  EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted(Company::SUPER_ADMIN, null, 'You are not allowed to create a new brand');
+
         $brand = new Brand();
         $form = $this->createForm(BrandType::class, $brand);
 
@@ -104,6 +107,8 @@ class BrandController extends AbstractController
      */
     public function update(Brand $brand, Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted(Company::SUPER_ADMIN, null, 'You are not allowed to modify a brand');
+
         $form = $this->createForm(BrandType::class, $brand);
 
         if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()), $request->isMethod("PUT"))) {
@@ -124,6 +129,8 @@ class BrandController extends AbstractController
      */
     public function delete(Brand $brand, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted(Company::SUPER_ADMIN, null, 'You are not allowed to delete a brand');
+
         if (0 < $brand->getProducts()->count()){
             throw new ApiCannotDeleteException("Cannot delete Brand, all products attached to this brand must be deleted first");
         }

@@ -17,7 +17,6 @@ class ApiErrorResponse extends JsonResponse
      * @param array $errors
      * @param int $status
      * @param array $headers
-     * @param bool $json
      */
     public function __construct(string $message, array $errors = [], int $status = Response::HTTP_BAD_REQUEST, array $headers = [])
     {

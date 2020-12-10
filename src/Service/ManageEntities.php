@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class ManageEntities
 {
     /** @var EntityManagerInterface */
-    private $em;
+    protected $em;
 
 
     public function __construct(EntityManagerInterface $em)
@@ -41,6 +41,4 @@ class ManageEntities
 
         return ['list' => $list, 'count' => $count];
     }
-
-
 }

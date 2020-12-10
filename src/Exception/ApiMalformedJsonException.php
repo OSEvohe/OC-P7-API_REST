@@ -12,7 +12,6 @@ class ApiMalformedJsonException extends HttpException
 {
 
     /**
-     * ApiObjectNotFoundException constructor.
      * @param string|null $message
      * @param Throwable|null $previous
      * @param int $code

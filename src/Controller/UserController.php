@@ -2,19 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\Company;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Security\UserVoter;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\HAL\UserHAL;
-use App\Service\ManageEntities;
+use App\Service\ManageCompany;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 
 /**
@@ -22,21 +23,23 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
  */
 class UserController extends AbstractController
 {
+    const DENIED = 'Access Denied to users registered by another company';
+
     /** @var UserHAL */
     private $userHAL;
 
-    /** @var ManageEntities */
-    private $manageEntities;
+    /** @var ManageCompany */
+    private $manageCompany;
 
     /**
      * UserController constructor.
      * @param UserHAL $userHAL
-     * @param ManageEntities $manageEntities
+     * @param ManageCompany $manageCompany
      */
-    public function __construct(UserHAL $userHAL, ManageEntities $manageEntities)
+    public function __construct(UserHAL $userHAL, ManageCompany $manageCompany)
     {
         $this->userHAL = $userHAL;
-        $this->manageEntities = $manageEntities;
+        $this->manageCompany = $manageCompany;
     }
 
 
@@ -50,7 +53,7 @@ class UserController extends AbstractController
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
-        $data = $this->manageEntities->list(User::class,$page, $limit);
+        $data = $this->manageCompany->listUsers($page, $limit);
         return $this->json($this->userHAL->getEntityListHAL($data, 'users'), Response::HTTP_OK, [], ['groups' => ['list_users', 'index']]);
     }
 
@@ -63,6 +66,8 @@ class UserController extends AbstractController
      */
     public function read(User $user): JsonResponse
     {
+        $this->denyAccessUnlessGranted(UserVoter::ACCESS_USER, $user, self::DENIED);
+
         return $this->json($this->userHAL->getHAL($user), Response::HTTP_OK, [], ['groups' => 'show_user']);
     }
 
@@ -78,14 +83,19 @@ class UserController extends AbstractController
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
+        /** @var Company $loggedCompany */
+        $loggedCompany = $this->getUser();
+
         $user = new User();
+        $user->setCompany($loggedCompany);
+
         $form = $this->createForm(UserType::class, $user);
 
         if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()))) {
             return $formHelper->errorsResponse($form);
         }
 
-        $this->manageEntities->save($user);
+        $this->manageCompany->createUser($user);
         return $this->json($this->userHAL->getHAL($user), Response::HTTP_CREATED, [], ['groups' => 'show_user']);
     }
 
@@ -102,13 +112,15 @@ class UserController extends AbstractController
      */
     public function update(User $user, Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
+        $this->denyAccessUnlessGranted(UserVoter::ACCESS_USER, $user, self::DENIED);
+
         $form = $this->createForm(UserType::class, $user);
 
         if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()), $request->isMethod("PUT"))) {
             return $formHelper->errorsResponse($form);
         }
 
-        $this->manageEntities->save($user);
+        $this->manageCompany->save($user);
         return $this->json($this->userHAL->getHAL($user), Response::HTTP_OK, [], ['groups' => 'show_user']);
     }
 
@@ -121,9 +133,10 @@ class UserController extends AbstractController
      */
     public function delete(User $user): JsonResponse
     {
+        $this->denyAccessUnlessGranted(UserVoter::ACCESS_USER, $user, self::DENIED);
         $id = $user->getId();
-        $this->manageEntities->delete($user);
+        $this->manageCompany->delete($user);
 
-        return $this->json("User #".$id." deleted!",Response::HTTP_OK);
+        return $this->json(['message' => "User #".$id." deleted!"],Response::HTTP_OK);
     }
 }

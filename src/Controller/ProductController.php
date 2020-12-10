@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Company;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Service\DataHelper;
@@ -67,7 +68,7 @@ class ProductController extends AbstractController
 
 
     /**
-     * @Route ("/product/", name="product_create", methods={"POST"} )
+     * @Route ("/product", name="product_create", methods={"POST"} )
      *
      * @param Request $request
      * @param FormHelper $formHelper
@@ -76,6 +77,8 @@ class ProductController extends AbstractController
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
+        $this->denyAccessUnlessGranted(Company::SUPER_ADMIN, null, 'You are not allowed to create a new product');
+
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
 
@@ -99,6 +102,8 @@ class ProductController extends AbstractController
      */
     public function update(Product $product, Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
+        $this->denyAccessUnlessGranted(Company::SUPER_ADMIN, null, 'You are not allowed to modify a product');
+
         $form = $this->createForm(ProductType::class, $product);
 
       if (false === $formHelper->validate($form, $dataHelper->jsonDecode($request->getContent()), $request->isMethod("PUT"))) {
@@ -120,6 +125,8 @@ class ProductController extends AbstractController
      */
     public function delete(Product $product): JsonResponse
     {
+        $this->denyAccessUnlessGranted(Company::SUPER_ADMIN, null, 'You are not allowed to delete a product');
+
         $id = $product->getId();
         $this->manageEntities->delete($product);
 
