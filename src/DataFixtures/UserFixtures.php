@@ -30,34 +30,36 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $company = new Company();
-        $company->setName('Company_test');
+        $company
+            ->setName('Company_test')
+            ->setUsername('user1');
+        $company->setPassword($this->passwordEncoder->encodePassword($company, 'PassWord01!'));
         $manager->persist($company);
 
         $bilemo = new Company();
-        $bilemo->setName('Bilemo');
+        $bilemo
+            ->setName('Bilemo')
+            ->setUsername('admin');
+        $bilemo->setPassword($this->passwordEncoder->encodePassword($bilemo, 'superPassword34!'));
+        $bilemo->setRoles([Company::SUPER_ADMIN]);
+
+
         $manager->persist($bilemo);
 
         $user = new User();
-        $user
-            ->setUsername('user1')
-            ->setEmail('user1@company.com')
+        $user->setEmail('user1@companyTest.com')
             ->setFirstName('John')
             ->setLastName('Doe');
         $user->setCompany($company);
-        $user->setPassword($this->passwordEncoder->encodePassword($user, 'PassWord01!'));
-        $user->setRoles([User::USER_COMPANY_ADMIN]);
         $manager->persist($user);
 
-        $admin = new User();
-        $admin
-            ->setUsername('admin')
+        $user2 = new User();
+        $user2
             ->setEmail('admin@bilemo.com')
             ->setFirstName('Sebastien')
-            ->setLastName('Admin');
-        $admin->setCompany($bilemo);
-        $admin->setPassword($this->passwordEncoder->encodePassword($admin, 'superPassword34!'));
-        $admin->setRoles([User::USER_ADMIN]);
-        $manager->persist($admin);
+            ->setLastName('Ollagnier');
+        $user2->setCompany($company);
+        $manager->persist($user2);
 
         $manager->flush();
     }

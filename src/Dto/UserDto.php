@@ -13,21 +13,14 @@ class UserDto extends AbstractDto
     use LinksTrait;
     use EmbeddedTrait;
 
-    /** @Groups({"show_user", "list_users", "show_company", "shortlist_users"}) */
+    /** @Groups({"show_user", "list_users", "show_company"}) */
     public function getId(): ?int
     {
         return $this->entity->getId();
     }
 
 
-    /** @Groups({"show_user", "list_users", "show_company", "shortlist_users"}) */
-    public function getUsername(): string
-    {
-        return (string)$this->entity->getUsername();
-    }
-
-
-    /** @Groups({"show_user"}) */
+    /** @Groups({"list_users", "show_user", "show_company"}) */
     public function getEmail(): ?string
     {
         return $this->entity->getEmail();

@@ -8,15 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ManageEntities
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
-
-    /**
-     * @var ProductRepository
-     */
-    private $repository;
 
 
     public function __construct(EntityManagerInterface $em)
@@ -40,7 +33,7 @@ class ManageEntities
         $this->em->flush();
     }
 
-    public function list($className, $page = 1, $limit= 10): array
+    public function list($className, $page = 1, $limit = 10): array
     {
         $er = $this->em->getRepository($className);
         $list = $er->findBy([], [], $limit, ($page - 1) * $limit);

@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Company;
+use App\Exception\ApiCannotDeleteException;
 use App\Form\CompanyType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
 use App\Service\HAL\CompanyHAL;
+use App\Service\ManageCompany;
 use App\Service\ManageEntities;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,17 +26,17 @@ class CompanyController extends AbstractController
     private $companyHAL;
 
     /** @var ManageEntities */
-    private $manageEntities;
+    private $manageCompany;
 
     /**
      * CompanyController constructor.
      * @param CompanyHAL $companyHAL
-     * @param ManageEntities $manageEntities
+     * @param ManageCompany $manageCompany
      */
-    public function __construct(CompanyHAL $companyHAL, ManageEntities $manageEntities)
+    public function __construct(CompanyHAL $companyHAL, ManageCompany $manageCompany)
     {
         $this->companyHAL = $companyHAL;
-        $this->manageEntities = $manageEntities;
+        $this->manageCompany = $manageCompany;
     }
 
 
@@ -48,7 +50,7 @@ class CompanyController extends AbstractController
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
-        $data = $this->manageEntities->list(Company::class,$page, $limit);
+        $data = $this->manageCompany->list(Company::class,$page, $limit);
         return $this->json($this->companyHAL->getEntityListHAL($data, 'companies'), Response::HTTP_OK, [], ['groups' => ['list_companies', 'index']]);
     }
 
@@ -84,7 +86,7 @@ class CompanyController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $this->manageEntities->save($company);
+        $this->manageCompany->register($company);
         return $this->json($this->companyHAL->getHAL($company), Response::HTTP_CREATED, [], ['groups' => 'show_company']);
     }
 
@@ -108,7 +110,7 @@ class CompanyController extends AbstractController
             return $formHelper->errorsResponse($form);
         }
 
-        $this->manageEntities->save($company);
+        $this->manageCompany->update($company);
         return $this->json($this->companyHAL->getHAL($company), Response::HTTP_OK, [], ['groups' => 'show_company']);
     }
 
@@ -122,8 +124,11 @@ class CompanyController extends AbstractController
      */
     public function delete(Company $company, EntityManagerInterface $em): JsonResponse
     {
+        if (0 < $company->getUsers()->count()){
+            throw new ApiCannotDeleteException("Cannot delete Company, all user attached to this company must be deleted first");
+        }
         $id = $company->getId();
-        $this->manageEntities->delete($company);
+        $this->manageCompany->delete($company);
 
         return $this->json("Brand #".$id." deleted!",Response::HTTP_OK);
     }

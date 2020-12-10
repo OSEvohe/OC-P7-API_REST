@@ -13,12 +13,10 @@ class ProductFixtures extends Fixture
     {
         $apple = new Brand();
         $apple->setName("Apple");
-        $apple->setLogo("brands/apple.png");
         $manager->persist($apple);
 
         $samsung = new Brand();
         $samsung->setName("Samsung");
-        $samsung->setLogo("brands/samsung.png");
         $manager->persist($samsung);
 
         for ($i=5;$i<13;$i++){

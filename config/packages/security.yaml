@@ -1,12 +1,12 @@
 security:
     encoders:
-        App\Entity\User:
+        App\Entity\Company:
             algorithm: auto
 
     providers:
         app_user_provider:
             entity:
-                class: App\Entity\User
+                class: App\Entity\Company
                 property: username
     firewalls:
         login:

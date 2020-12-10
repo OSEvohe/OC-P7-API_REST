@@ -18,32 +18,30 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $exception = $event->getThrowable();
 
         if ($exception instanceof NotFoundHttpException) {
-            $data = [
-                'status' => $exception->getStatusCode(),
-                'message' => 'No resource available at this URI',
-                'errors' => [$exception->getMessage()]
-            ];
-        } elseif ($exception instanceof ApiObjectNotFoundException || $exception instanceof HttpException) {
-            $data = [
-                'status' => $exception->getStatusCode(),
-                'message' => 'Resource not found',
-                'errors' => [$exception->getMessage()]
-            ];
+            $data = $this->formatException($exception->getStatusCode(), 'No resource available at this URI', [$exception->getMessage()]);
+        } elseif ($exception instanceof ApiObjectNotFoundException) {
+            $data = $this->formatException($exception->getStatusCode(), 'Resource not found', [$exception->getMessage()]);
+        } elseif ($exception instanceof HttpException) {
+            $data = $this->formatException($exception->getStatusCode(), $exception->getMessage());
         } else {
-            $data = [
-                'status' => 500,
-                'message' => $exception->getMessage(),
-                'errors' => $exception->getTrace()
-            ];
+            $data = $this->formatException(500, $exception->getMessage(), $exception->getTrace());
         }
 
         $event->setResponse(new ApiErrorResponse(($data['message']), $data['errors'], $data['status']));
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'kernel.exception' => 'onKernelException',
+        ];
+    }
+
+    private function formatException($status, $message, $errors = []){
+        return [
+            'status' => $status,
+            'message' => $message,
+            'errors' => $errors
         ];
     }
 }
