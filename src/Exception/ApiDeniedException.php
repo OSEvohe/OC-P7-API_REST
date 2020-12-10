@@ -5,12 +5,10 @@ namespace App\Exception;
 
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
-class ApiObjectNotFoundException extends HttpException
+class ApiDeniedException extends \Symfony\Component\HttpKernel\Exception\HttpException
 {
-
     /**
      * @param string|null $message
      * @param Throwable|null $previous
@@ -19,6 +17,6 @@ class ApiObjectNotFoundException extends HttpException
      */
     public function __construct(string $message = null, Throwable $previous = null, int $code = 0, array $headers = [])
     {
-        parent::__construct(Response::HTTP_NOT_FOUND, $message, $previous, $headers, $code);
+        parent::__construct(Response::HTTP_FORBIDDEN, $message, $previous, $headers, $code);
     }
 }
