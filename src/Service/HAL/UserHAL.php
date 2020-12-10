@@ -19,7 +19,9 @@ class UserHAL extends AbstractHAL
 
     protected function setEmbedded(): void
     {
-        $this->setEmbeddedData($this->dto->getEntity()->getCompany(), CompanyHAL::class, 'company');
+        if ($this->security->isGranted(Company::SUPER_ADMIN)) {
+            $this->setEmbeddedData($this->dto->getEntity()->getCompany(), CompanyHAL::class, 'company');
+        }
     }
 
 
