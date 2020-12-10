@@ -18,7 +18,6 @@ class UserType extends AbstractType
             ->add('email', TextType::class, ['empty_data' => ''])
             ->add('firstName', TextType::class, ['empty_data' => ''])
             ->add('lastName', TextType::class, ['empty_data' => ''])
-            ->add('company', EntityType::class,['class' => Company::class, 'empty_data' => ''])
         ;
     }
 
