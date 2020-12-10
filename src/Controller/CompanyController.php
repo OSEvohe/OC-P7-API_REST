@@ -11,6 +11,7 @@ use App\Service\HAL\CompanyHAL;
 use App\Service\ManageCompany;
 use App\Service\ManageEntities;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route ("/api")
+ * @IsGranted("ROLE_SUPER_ADMIN", message="Access to companies denied")
  */
 class CompanyController extends AbstractController
 {
@@ -127,6 +129,7 @@ class CompanyController extends AbstractController
         if (0 < $company->getUsers()->count()){
             throw new ApiCannotDeleteException("Cannot delete Company, all users attached to this company must be deleted first");
         }
+
         $id = $company->getId();
         $this->manageCompany->delete($company);
 
