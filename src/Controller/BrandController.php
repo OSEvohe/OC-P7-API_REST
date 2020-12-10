@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Brand;
+use App\Exception\ApiCannotDeleteException;
 use App\Form\BrandType;
 use App\Service\DataHelper;
 use App\Service\FormHelper;
@@ -123,6 +124,10 @@ class BrandController extends AbstractController
      */
     public function delete(Brand $brand, EntityManagerInterface $em): JsonResponse
     {
+        if (0 < $brand->getProducts()->count()){
+            throw new ApiCannotDeleteException("Cannot delete Brand, all products attached to this brand must be deleted first");
+        }
+
         $id = $brand->getId();
         $this->manageEntities->delete($brand);
 
