@@ -10,6 +10,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -17,7 +18,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     {
         $exception = $event->getThrowable();
 
-        if ($exception instanceof NotFoundHttpException) {
+        if ($exception instanceof NotFoundHttpException || $exception instanceof RouteNotFoundException) {
             $data = $this->formatException($exception->getStatusCode(), 'No resource available at this URI', [$exception->getMessage()]);
         } elseif ($exception instanceof ApiObjectNotFoundException) {
             $data = $this->formatException($exception->getStatusCode(), 'Resource not found', [$exception->getMessage()]);

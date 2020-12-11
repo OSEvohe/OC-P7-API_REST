@@ -130,6 +130,6 @@ class ProductController extends AbstractController
         $id = $product->getId();
         $this->manageEntities->delete($product);
 
-        return $this->json("Product #".$id." deleted!",Response::HTTP_OK);
+        return $this->json(['message' => "Product #".$id." deleted!",Response::HTTP_OK]);
     }
 }

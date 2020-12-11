@@ -44,7 +44,7 @@ class UserController extends AbstractController
 
 
     /**
-     * List Users
+     * List users
      * @Route("/users/{page}/{limit}", name="users_list", methods={"GET"})
      * @param int $page
      * @param int $limit

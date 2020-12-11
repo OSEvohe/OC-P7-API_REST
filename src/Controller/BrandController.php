@@ -75,10 +75,9 @@ class BrandController extends AbstractController
      * @param Request $request
      * @param FormHelper $formHelper
      * @param DataHelper $dataHelper
-     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
-    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper,  EntityManagerInterface $em): JsonResponse
+    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
         $this->denyAccessUnlessGranted(Company::SUPER_ADMIN, null, 'You are not allowed to create a new brand');
 
@@ -138,6 +137,6 @@ class BrandController extends AbstractController
         $id = $brand->getId();
         $this->manageEntities->delete($brand);
 
-        return $this->json("Brand #".$id." deleted!",Response::HTTP_OK);
+        return $this->json(['message' => "Brand #".$id." deleted!",Response::HTTP_OK]);
     }
 }

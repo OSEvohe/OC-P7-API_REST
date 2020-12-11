@@ -131,6 +131,11 @@ abstract class AbstractHAL
         }
     }
 
+    /**
+     * @param $rel
+     * @param $action
+     * @param $method
+     */
     protected function addLink($rel, $action, $method)
     {
         $entityName = strtolower((new UtilHelper())->getShortClassName($this->dto->getEntity()));

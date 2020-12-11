@@ -51,7 +51,7 @@ class ProductDto extends AbstractDto
 
 
     /**
-     * @SerializedName("_link")
+     * @SerializedName("_links")
      * @Groups({"show_brand", "show_product", "list_products"})
      */
     public function getLink()
