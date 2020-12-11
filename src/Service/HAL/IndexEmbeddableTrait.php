@@ -5,6 +5,7 @@ namespace App\Service\HAL;
 
 
 use App\Dto\IndexDto;
+use Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 trait IndexEmbeddableTrait
@@ -28,7 +29,7 @@ trait IndexEmbeddableTrait
     public function getEntityListHAL(array $data, string $embeddedFieldName = 'results'): IndexDto
     {
         if (!isset($data['list']) || !isset($data['count'])){
-            throw new \Exception('Missing field(s) in array passed to getEntityListHAL, did you forgot to set list or count fields?');
+            throw new Exception('Missing field(s) in array passed to getEntityListHAL, did you forgot to set list or count fields?');
         }
 
         $this->indexDto = new IndexDto(null);

@@ -69,7 +69,7 @@ class ManageCompany extends ManageEntities
     public function createUser(User $user)
     {
         if ($this->security->isGranted(Company::SUPER_ADMIN)){
-            throw new ApiDeniedException("Super admin cannot create users");
+            throw new ApiDeniedException("Bilemo Admin cannot create users");
         }
 
         parent::save($user);

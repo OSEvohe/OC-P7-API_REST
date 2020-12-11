@@ -11,6 +11,7 @@ use App\Service\HAL\CompanyHAL;
 use App\Service\ManageCompany;
 use App\Service\ManageEntities;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,12 +44,12 @@ class CompanyController extends AbstractController
 
 
     /**
-     * List Company
-     * @Route("/companies/{page}/{limit}", name="company_list", methods={"GET"})
+     * List Companies
+     * @Route("/companies/{page}/{limit}", name="companies_list", methods={"GET"})
      * @param int $page
      * @param int $limit
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
@@ -133,6 +134,6 @@ class CompanyController extends AbstractController
         $id = $company->getId();
         $this->manageCompany->delete($company);
 
-        return $this->json("Company #".$id." deleted!",Response::HTTP_OK);
+        return $this->json(['message' => "Company #".$id." deleted!",Response::HTTP_OK]);
     }
 }

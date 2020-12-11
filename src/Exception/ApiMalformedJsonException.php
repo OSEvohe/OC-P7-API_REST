@@ -17,7 +17,7 @@ class ApiMalformedJsonException extends HttpException
      * @param int $code
      * @param array $headers
      */
-    public function __construct(string $message = "Error in Json syntax", Throwable $previous = null, int $code = 0, array $headers = [])
+    public function __construct(string $message = "Error(s) in Json syntax", Throwable $previous = null, int $code = 0, array $headers = [])
     {
         parent::__construct(Response::HTTP_BAD_REQUEST, $message, $previous, $headers, $code);
     }

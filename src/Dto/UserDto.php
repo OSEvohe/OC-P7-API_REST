@@ -39,7 +39,7 @@ class UserDto extends AbstractDto
     }
 
     /**
-     * @SerializedName("_link")
+     * @SerializedName("_links")
      * @Groups({"show_user", "list_users", "show_company"})
      */
     public function getLink()

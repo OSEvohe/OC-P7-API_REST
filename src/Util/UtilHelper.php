@@ -5,16 +5,16 @@ namespace App\Util;
 
 
 use ReflectionClass;
-use ReflectionException;
 
 class UtilHelper
 {
+    /**
+     * @param $class
+     * @return string
+     */
     public function getShortClassName($class): string
     {
-        try {
-            return (new ReflectionClass($class))->getShortName();
-        } catch (ReflectionException $e) {
-        }
+        return (new ReflectionClass($class))->getShortName();
     }
 
     /**

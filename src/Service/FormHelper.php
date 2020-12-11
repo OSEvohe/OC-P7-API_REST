@@ -9,13 +9,24 @@ use Symfony\Component\Form\FormInterface;
 
 class FormHelper
 {
-
-    function validate(FormInterface $form, $data, bool $clearMissing = true){
+    /**
+     * @param FormInterface $form
+     * @param $data
+     * @param bool $clearMissing
+     * @return bool
+     */
+    function validate(FormInterface $form, $data, bool $clearMissing = true): bool
+    {
         $form->submit($data, $clearMissing);
         return false !== $form->isValid();
     }
 
-    function errorsResponse($form, string $message = 'Erreur')
+    /**
+     * @param $form
+     * @param string $message
+     * @return ApiErrorResponse
+     */
+    function errorsResponse($form, string $message = 'Errors'): ApiErrorResponse
     {
         $list = [];
         foreach ($form->getErrors(true) as $error) {
