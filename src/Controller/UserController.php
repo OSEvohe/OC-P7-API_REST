@@ -72,7 +72,7 @@ class UserController extends AbstractController
      * @param User $user
      * @return JsonResponse
      *
-     * @OA\Get(description="This resource represent an user")
+     * @OA\Get(description="This resource represent a company user, company can manage only his users")
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, ref="#/components/responses/readUser")
      * @OA\Response(response=404, description="User not found")
@@ -135,9 +135,9 @@ class UserController extends AbstractController
      * @OA\Patch (description="**Update User**, only fields present in body will be updated")
      * @OA\Put (description="**Update User**, all fields are required")
      * @OA\Response(response=403, description="You cannot update others companies's user")
-     * @OA\Response(response=200, ref="#/components/responses/updateProduct")
+     * @OA\Response(response=200, ref="#/components/responses/UpdateUser")
      * @OA\Response(response=400, ref="#/components/responses/badParameters")
-     * @OA\RequestBody(ref="#/components/requestBodies/UpdateProduct")
+     * @OA\RequestBody(ref="#/components/requestBodies/UpdateUser")
      * @OA\Response(response=404, description="User not found")
      */
     public function update(User $user, Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse

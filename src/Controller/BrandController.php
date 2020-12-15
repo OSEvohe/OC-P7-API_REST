@@ -111,11 +111,7 @@ class BrandController extends AbstractController
      * @param DataHelper $dataHelper
      * @return JsonResponse
      *
-     * @OA\Response(
-     *     response=403,
-     *     description="You are not allowed to create a new brand"
-     * )
-     *
+     * @OA\Response(response=403, description="You are not allowed to create a new brand")
      * @OA\Response(
      *     response=201,
      *     description="New brand created",
@@ -124,11 +120,7 @@ class BrandController extends AbstractController
      *      )
      * )
      *
-     * @OA\Response(
-     *     response=400,
-     *     description="Required fields missing or invalid"
-     * )
-     *
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")     *
      * @OA\RequestBody(ref="#/components/requestBodies/NewBrand")
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
@@ -169,8 +161,8 @@ class BrandController extends AbstractController
      *       ref=@Model(type=BrandDto::class, groups={"show_brand"})
      *      )
      * )
-     * @OA\Response(
-     *     response=400,description="Field(s) missing or invalid")
+     * @OA\Response(response=404, description="Brand not found")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/UpdateBrand")
      */
     public function update(Brand $brand, Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
@@ -200,6 +192,7 @@ class BrandController extends AbstractController
      * @OA\Response(response=200, description="Brand deleted")
      * @OA\Response(response=409, description="Cannot delete Brand, all products attached to this brand must be deleted first")
      * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=404, description="Brand not found")
      */
     public function delete(Brand $brand, EntityManagerInterface $em): JsonResponse
     {

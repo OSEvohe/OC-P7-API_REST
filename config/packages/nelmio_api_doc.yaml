@@ -2,7 +2,7 @@ nelmio_api_doc:
   documentation:
     info:
       title: Bilemo Api
-      description: Smartphone Catalog
+      description: Your Smartphone Catalog
       version: 1.0.0
     security:
       - Bearer: [ ]
@@ -72,11 +72,36 @@ nelmio_api_doc:
             _embedded:
               type: object
               properties:
-                products:
+                users:
                   type: array
                   items:
                     ref: "#/components/schemas/UsersIndex"
+        Companies:
+          type: object
+          properties:
+            page:
+              ref: "#/components/schemas/page"
+            _links:
+              ref: "#/components/schemas/_links"
+            _embedded:
+              type: object
+              properties:
+                companies:
+                  type: array
+                  items:
+                    ref: "#/components/schemas/CompaniesIndex"
       requestBodies:
+        LoginCheck:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: "string"
+                  password:
+                    type: "string"
         NewBrand:
           required: true
           content:
@@ -121,6 +146,27 @@ nelmio_api_doc:
                     type: string
                   lastName:
                     type: string
+        UpdateUser:
+          ref: "#/components/requestBodies/NewUser"
+        NewCompany:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  username:
+                    type: string
+                  plainPassword:
+                    type: string
+                    description: "Password need at least 8 characters, lower and upper case letters, one number and one special character"
+        UpdateCompany:
+          ref: "#/components/requestBodies/NewCompany"
+
+
+
       parameters:
         pageNumber:
           name: page
@@ -190,9 +236,56 @@ nelmio_api_doc:
             application/json:
               schema:
                 ref: "#/components/schemas/User"
+        UpdateUser:
+          description: "User updated"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/User"
+        listCompanies:
+          description: "List of companies"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Companies"
+        readCompany:
+          description: "Company's details"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Company"
+        NewCompany:
+          description: "New company created"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Company"
+        UpdateCompany:
+          description: "Company updated"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Company"
+        Token:
+          description: "Your JWT Token"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2MDgwNDYyODMsImV4cCI6MTYwODA0OTg4Mywicm9sZXMiOlsiUk9MRV9TVVBFUl9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImFkbWluIn0.EIDwKcavSnS0MJSFy92lT15PZbYNLny1Jl1ONQo3uOODGbcOz1e_bwD2-YEvdE5E4xsQ2rW6eCk1mYr5ioFmRBumPZfxXaHDff_HljDDqs_f9Yotj_aev8Uz3AW-9m4Fl0b6YzJOoQJ5mIiEOC9ikDsnvaeTqXke9GqQfhga7ZtudkNVJRAwCUHQ9onzGiPp9p3kRpT2SZ6ob8lbKtkOeFzHK9jx9FKtDOMADd8-gvhlb_UJOL7xU3Sc0S2BzZPsSkcAbx2z3S2CuD3zGAGqPFtWn66RKpZT9EtLxTYP1BQoCiIVDDVWkFk5xW4_bqwxCQro6ymnf3omzkl0WA1_K4xSbVvbTMSQ7aovq5KVMSSP6qm6YOgfBEIQSZDxSqJv3zYL8EK9QoDZcs8fvDqXpvbIIKiRCSdcXqN0h3vTuyP5xg5Gk_Lh6wANbrI04etWu8ZCQ7UP4hTzCwymN5wGc-jyTGNXNejnYtf4pFPepPakdj3nqlhAaBFV12cBqaLEcRxO8Ilpq_S2n6ByI9bIpdoQhJcUtLoHw6gPLQq4q2v3X53qUW6d1r1Nk8K3pvYN_08ANhVpO9IGKnybejLq8yZUy2T5AnL5fzTreEwOknQ_Co6PisZeeo3riEXUYG-Jgt-mNqUwLfGirhh6FESyRvbFAc3Ia86BS5hP6a2CPXY"
 
-
-
+    paths:
+      /api/login_check:
+        summary: "Retrieve your JWT Token !"
+        post:
+          requestBody:
+            ref: "#/components/requestBodies/LoginCheck"
+          responses:
+            '200':
+              ref: "#components/responses/Token"
 
 
   areas: # to filter documented areas
@@ -210,3 +303,4 @@ nelmio_api_doc:
       - { alias: User, type: App\Dto\UserDto, groups: [ show_user ] }
       - { alias: CompaniesIndex, type: App\Dto\CompanyDto, groups: [ list_companies ] }
       - { alias: CompanyUsers, type: App\Dto\UserDto, groups: [ show_company ] }
+      - { alias: Company, type: App\Dto\CompanyDto, groups: [ show_company ] }

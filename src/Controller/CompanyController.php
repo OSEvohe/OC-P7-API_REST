@@ -18,10 +18,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 /**
  * @Route ("/api")
  * @IsGranted("ROLE_SUPER_ADMIN", message="Access to companies denied")
+ * @OA\Tag (name="Company", description="A company can manage his users. Only Bilemo admin can manage companies ")
+ * @OA\Response(response=403, description="Only Bilemo admin can manage companies")
  */
 class CompanyController extends AbstractController
 {
@@ -44,12 +47,16 @@ class CompanyController extends AbstractController
 
 
     /**
-     * List Companies
+     * List companies
      * @Route("/companies/{page}/{limit}", name="companies_list", methods={"GET"})
      * @param int $page
      * @param int $limit
      * @return JsonResponse
      * @throws Exception
+     *
+     * @OA\Parameter (ref="#/components/parameters/pageNumber")
+     * @OA\Parameter (ref="#/components/parameters/limit")
+     * @OA\Response(response=200, ref="#/components/responses/listCompanies")
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
@@ -59,10 +66,16 @@ class CompanyController extends AbstractController
 
 
     /**
-     * Show company details
+     * Show company's details
      * @Route("/company/{id}", name="company_read", methods={"GET"})
      * @param Company $company
      * @return JsonResponse
+     *
+     * @OA\Get(description="This resource represent a company, companies are managed by Bilemo admin")
+     * @OA\Parameter (ref="#/components/parameters/id")
+     * @OA\Response(response=200, ref="#/components/responses/readCompany")
+     * @OA\Response(response=404, description="Company not found")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
      */
     public function read(Company $company): JsonResponse
     {
@@ -77,10 +90,14 @@ class CompanyController extends AbstractController
      * @param Request $request
      * @param FormHelper $formHelper
      * @param DataHelper $dataHelper
-     * @param EntityManagerInterface $em
      * @return JsonResponse
+     *
+     * @OA\Post(description="Create a new company")
+     * @OA\Response(response=201, ref="#/components/responses/NewCompany")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\RequestBody(ref="#/components/requestBodies/NewCompany")
      */
-    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
+    public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
         $company = new Company();
         $form = $this->createForm(CompanyType::class, $company);
@@ -102,10 +119,17 @@ class CompanyController extends AbstractController
      * @param Request $request
      * @param FormHelper $formHelper
      * @param DataHelper $dataHelper
-     * @param EntityManagerInterface $em
      * @return JsonResponse
+     *
+     * @OA\Parameter (ref="#/components/parameters/id")
+     * @OA\Patch (description="**Update Company**, only fields present in body will be updated")
+     * @OA\Put (description="**Update Company**, all fields are required")
+     * @OA\Response(response=200, ref="#/components/responses/UpdateCompany")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\RequestBody(ref="#/components/requestBodies/UpdateCompany")
+     * @OA\Response(response=404, description="Company not found")
      */
-    public function update(Company $company, Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
+    public function update(Company $company, Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
         $form = $this->createForm(CompanyType::class, $company);
 
@@ -124,6 +148,12 @@ class CompanyController extends AbstractController
      * @param Company $company
      * @param EntityManagerInterface $em
      * @return JsonResponse
+     *
+     * @OA\Parameter (ref="#/components/parameters/id")
+     * @OA\Response(response=200, description="Company deleted")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=409, description="Cannot delete, all users attached to this company must be deleted first")
+     * @OA\Response(response=404, description="Company not found")
      */
     public function delete(Company $company, EntityManagerInterface $em): JsonResponse
     {
