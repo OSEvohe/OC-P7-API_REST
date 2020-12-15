@@ -4,9 +4,9 @@
 namespace App\Dto;
 
 
-use App\Entity\Company;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use OpenApi\Annotations as OA;
 
 class UserDto extends AbstractDto
 {
@@ -41,6 +41,7 @@ class UserDto extends AbstractDto
     /**
      * @SerializedName("_links")
      * @Groups({"show_user", "list_users", "show_company"})
+     * @OA\Property(ref="#/components/schemas/_links")
      */
     public function getLink()
     {
@@ -50,6 +51,14 @@ class UserDto extends AbstractDto
     /**
      * @SerializedName("_embedded")
      * @Groups({"show_user", "list_users"})
+     *
+     * @OA\Property(
+     *      type="object",
+     *     @OA\Property (
+     *     property="company",
+     *     ref="#/components/schemas/CompaniesIndex"
+     *     )
+     * )
      */
     public function getEmbedded()
     {

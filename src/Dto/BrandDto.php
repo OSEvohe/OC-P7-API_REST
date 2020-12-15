@@ -6,6 +6,7 @@ namespace App\Dto;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use OpenApi\Annotations as OA;
 
 class BrandDto extends AbstractDto
 {
@@ -33,6 +34,8 @@ class BrandDto extends AbstractDto
     /**
      * @SerializedName("_links")
      * @Groups({"list_brands", "show_brand", "show_product", "list_products"})
+     *
+     * @OA\Property(ref="#/components/schemas/_links")
      */
     public function getLinks()
     {
@@ -42,6 +45,15 @@ class BrandDto extends AbstractDto
     /**
      * @Groups({"show_brand"})
      * @SerializedName("_embedded")
+     *
+     * @OA\Property(
+     *      type="object",
+     *     @OA\Property (
+     *     property="products",
+     *      @OA\Items(ref="#/components/schemas/BrandProducts")
+     *     )
+     * )
+     *
      */
     public function getEmbedded()
     {

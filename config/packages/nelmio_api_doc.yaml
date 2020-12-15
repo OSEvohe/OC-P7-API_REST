@@ -1,0 +1,212 @@
+nelmio_api_doc:
+  documentation:
+    info:
+      title: Bilemo Api
+      description: Smartphone Catalog
+      version: 1.0.0
+    security:
+      - Bearer: [ ]
+    components:
+      securitySchemes:
+        Bearer:
+          type: http
+          scheme: bearer
+          bearerFormat: JWT
+      schemas:
+        _links:
+          type: object
+          properties:
+            rel:
+              type: object
+              properties:
+                href:
+                  type: string
+                method:
+                  type: string
+        page:
+          type: object
+          properties:
+            size:
+              type: integer
+            totalElements:
+              type: integer
+            totalPages:
+              type: integer
+            number:
+              type: integer
+        Brands:
+          type: object
+          properties:
+            page:
+              ref: "#/components/schemas/page"
+            _links:
+              ref: "#/components/schemas/_links"
+            _embedded:
+              type: object
+              properties:
+                brands:
+                  type: array
+                  items:
+                    ref: "#/components/schemas/BrandsIndex"
+        Products:
+          type: object
+          properties:
+            page:
+              ref: "#/components/schemas/page"
+            _links:
+              ref: "#/components/schemas/_links"
+            _embedded:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    ref: "#/components/schemas/ProductsIndex"
+        Users:
+          type: object
+          properties:
+            page:
+              ref: "#/components/schemas/page"
+            _links:
+              ref: "#/components/schemas/_links"
+            _embedded:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    ref: "#/components/schemas/UsersIndex"
+      requestBodies:
+        NewBrand:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: "string"
+        UpdateBrand:
+          ref: "#/components/requestBodies/NewBrand"
+        NewProduct:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  price:
+                    type: number
+                    format: float
+                    description : "Price with up to 2 decimal digits"
+                  description:
+                    type: string
+                  brand:
+                    type: integer
+                    description: "Brand Id"
+        UpdateProduct:
+          ref: "#/components/requestBodies/NewProduct"
+        NewUser:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+      parameters:
+        pageNumber:
+          name: page
+          in: path
+          description: "Page number"
+          required: false
+          schema:
+            type: integer
+            default: 1
+        limit:
+          name: limit
+          in: path
+          description: "Number of items per pages"
+          required: false
+          schema:
+            type: integer
+            default: 10
+        id:
+          name: id
+          in: path
+          description : "Item Id"
+          required: true
+          schema:
+            type: integer
+      responses:
+        badParameters:
+          description: "Bad Url Parameter or required fields missing/invalid"
+        readProduct:
+          description: "Details of the product"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Product"
+        listProduct:
+          description: "List of products"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Products"
+        updateProduct:
+          description: "Product updated"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Product"
+        NewProduct:
+          description: "New product created"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Product"
+        listUsers:
+          description: "List of users"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Users"
+        readUser:
+          description: "User's details"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/User"
+        NewUser:
+          description: "New user created"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/User"
+
+
+
+
+
+  areas: # to filter documented areas
+    path_patterns:
+      - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+  models:
+    names:
+      - { alias: Brand, type: App\Dto\BrandDto, groups: [ show_brand ] }
+      - { alias: BrandsIndex, type: App\Dto\BrandDto, groups: [ list_brands ] }
+      - { alias: BrandProducts, type: App\Dto\ProductDto, groups: [ show_brand ] }
+      - { alias: ProductsIndex, type: App\Dto\ProductDto, groups: [ list_products ] }
+      - { alias: Product, type: App\Dto\ProductDto, groups: [ show_product ] }
+      - { alias: ProductBrand, type: App\Dto\BrandDto, groups: [ show_product ] }
+      - { alias: UsersIndex, type: App\Dto\UserDto, groups: [ list_users ] }
+      - { alias: User, type: App\Dto\UserDto, groups: [ show_user ] }
+      - { alias: CompaniesIndex, type: App\Dto\CompanyDto, groups: [ list_companies ] }
+      - { alias: CompanyUsers, type: App\Dto\UserDto, groups: [ show_company ] }

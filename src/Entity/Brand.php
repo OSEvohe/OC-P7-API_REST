@@ -26,7 +26,7 @@ class Brand
 
     /**
      * @ORM\Column(type="string", length=100)
-     * @Groups({"list_products", "show_product", "show_brand", "list_brands"})
+     * @Groups({"list_products", "show_product", "show_brand", "list_brands", "new_brand"})
      * @Assert\NotBlank(message = "Brand name is missing or empty")
      * @Assert\Length (
      *     min = 2,

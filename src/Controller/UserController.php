@@ -16,10 +16,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 
 /**
  * @Route ("/api")
+ * @OA\Tag (name="User")
  */
 class UserController extends AbstractController
 {
@@ -45,12 +47,18 @@ class UserController extends AbstractController
 
     /**
      * List users
-     * @Route("/users/{page}/{limit}", name="users_list", methods={"GET"})
+     * @Route("/users/{page}/{limit}", name="users_list", methods={"GET"}, requirements={"page"="\d*", "limit"="\d*"})
      * @param int $page
      * @param int $limit
      * @return JsonResponse
      * @throws Exception
+     *
+     * @OA\Parameter (ref="#/components/parameters/pageNumber")
+     * @OA\Parameter (ref="#/components/parameters/limit")
+     *
+     * @OA\Response(response=200, ref="#/components/responses/listUsers")
      */
+
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
         $data = $this->manageCompany->listUsers($page, $limit);
@@ -59,10 +67,17 @@ class UserController extends AbstractController
 
 
     /**
-     * Show user details
+     * Show user's details
      * @Route("/user/{id}", name="user_read", methods={"GET"})
      * @param User $user
      * @return JsonResponse
+     *
+     * @OA\Get(description="This resource represent an user")
+     * @OA\Parameter (ref="#/components/parameters/id")
+     * @OA\Response(response=200, ref="#/components/responses/readUser")
+     * @OA\Response(response=404, description="User not found")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=403, description="You cannot access to others companies's user")
      */
     public function read(User $user): JsonResponse
     {
@@ -80,6 +95,12 @@ class UserController extends AbstractController
      * @param FormHelper $formHelper
      * @param DataHelper $dataHelper
      * @return JsonResponse
+     *
+     * @OA\Post(description="Create a new user attached to your company")
+     * @OA\Response(response=201, ref="#/components/responses/NewUser")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\RequestBody(ref="#/components/requestBodies/NewUser")
+     *
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
@@ -109,6 +130,15 @@ class UserController extends AbstractController
      * @param FormHelper $formHelper
      * @param DataHelper $dataHelper
      * @return JsonResponse
+     *
+     * @OA\Parameter (ref="#/components/parameters/id")
+     * @OA\Patch (description="**Update User**, only fields present in body will be updated")
+     * @OA\Put (description="**Update User**, all fields are required")
+     * @OA\Response(response=403, description="You cannot update others companies's user")
+     * @OA\Response(response=200, ref="#/components/responses/updateProduct")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\RequestBody(ref="#/components/requestBodies/UpdateProduct")
+     * @OA\Response(response=404, description="User not found")
      */
     public function update(User $user, Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
     {
@@ -126,10 +156,18 @@ class UserController extends AbstractController
 
 
     /**
+     * Delete an user
      * @Route ("/user/{id}", name="user_delete", methods={"DELETE"} )
      *
      * @param User $user
      * @return JsonResponse
+     *
+     * @OA\Parameter (ref="#/components/parameters/id")
+     * @OA\Response(response=200, description="User deleted")
+     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=403, description="You cannot delete others companies's user")
+     * @OA\Response(response=404, description="User not found")
+     *
      */
     public function delete(User $user): JsonResponse
     {
@@ -137,6 +175,6 @@ class UserController extends AbstractController
         $id = $user->getId();
         $this->manageCompany->delete($user);
 
-        return $this->json(['message' => "User #".$id." deleted!"],Response::HTTP_OK);
+        return $this->json(['message' => "User #" . $id . " deleted!"], Response::HTTP_OK);
     }
 }
