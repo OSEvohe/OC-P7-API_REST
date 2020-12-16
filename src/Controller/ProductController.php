@@ -77,7 +77,7 @@ class ProductController extends AbstractController
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, ref="#/components/responses/readProduct")
      * @OA\Response(response=404, description="Product not found")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      */
     public function read(Product $product): JsonResponse
     {
@@ -97,7 +97,7 @@ class ProductController extends AbstractController
      * @OA\Post(description="**Create** a new product")
      * @OA\Response(response=403, description="You are not allowed to create a new product")
      * @OA\Response(response=201, ref="#/components/responses/NewProduct")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/NewProduct")
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
@@ -131,7 +131,7 @@ class ProductController extends AbstractController
      * @OA\Put (description="**Update** a product, all fields are required")
      * @OA\Response(response=403, description="You are not allowed to modify a product")
      * @OA\Response(response=200, ref="#/components/responses/updateProduct")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=404, description="Product not found")
      * @OA\RequestBody(ref="#/components/requestBodies/UpdateProduct")
      */
@@ -162,7 +162,7 @@ class ProductController extends AbstractController
      * @OA\Delete(description="**Delete** a product")
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, description="Product deleted")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=404, description="Product not found")
      */
     public function delete(Product $product): JsonResponse

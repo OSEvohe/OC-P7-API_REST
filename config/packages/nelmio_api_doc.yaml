@@ -2,7 +2,7 @@ nelmio_api_doc:
   documentation:
     info:
       title: Bilemo Api
-      description: Your Smartphone Catalog
+      description: This is your Smartphone Catalog
       version: 1.0.0
     security:
       - Bearer: [ ]
@@ -219,8 +219,8 @@ nelmio_api_doc:
           schema:
             type: integer
       responses:
-        badParameters:
-          description: "Bad Url Parameter or required fields missing/invalid"
+        BadParameters:
+          description: "Invalid Url parameters or required fields missing/invalid"
         readProduct:
           description: "Details of the product"
           content:
@@ -245,6 +245,12 @@ nelmio_api_doc:
             application/json:
               schema:
                 ref: "#/components/schemas/Product"
+        readBrand:
+          description: "Details of the Brand"
+          content:
+            application/json:
+              schema:
+                ref: "#/components/schemas/Brand"
         listUsers:
           description: "List of users"
           content:
@@ -361,7 +367,7 @@ nelmio_api_doc:
           tags:
             - Security
           summary: "Retrieve your JWT Token"
-          description: "Retrieve your JWT Token by sending your username/password"
+          description: "Retrieve your JWT Token by sending your username/password, Bilemo API use the Bearer scheme"
           requestBody:
             ref: "#/components/requestBodies/LoginCheck"
           responses:
@@ -369,6 +375,8 @@ nelmio_api_doc:
               ref: "#/components/responses/Token"
             '401':
               ref: "#/components/responses/InvalidCredentials"
+            '400':
+              ref: "#/components/responses/BadParameters"
 
   areas: # to filter documented areas
     path_patterns:

@@ -58,6 +58,7 @@ class UserController extends AbstractController
      * @OA\Parameter (ref="#/components/parameters/limit")
      *
      * @OA\Response(response=200, ref="#/components/responses/listUsers")
+     * @OA\Get(description="List of company's users, company can manage only his users")
      */
 
     public function index(int $page = 1, int $limit = 10): JsonResponse
@@ -77,7 +78,7 @@ class UserController extends AbstractController
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, ref="#/components/responses/readUser")
      * @OA\Response(response=404, description="User not found")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=403, description="You cannot access to others companies's user")
      */
     public function read(User $user): JsonResponse
@@ -99,7 +100,7 @@ class UserController extends AbstractController
      *
      * @OA\Post(description="Create a new user attached to your company")
      * @OA\Response(response=201, ref="#/components/responses/NewUser")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/NewUser")
      *
      */
@@ -137,7 +138,7 @@ class UserController extends AbstractController
      * @OA\Put (description="**Update User**, all fields are required")
      * @OA\Response(response=403, description="You cannot update others companies's user")
      * @OA\Response(response=200, ref="#/components/responses/UpdateUser")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/UpdateUser")
      * @OA\Response(response=404, description="User not found")
      */
@@ -166,7 +167,7 @@ class UserController extends AbstractController
      * @OA\Delete(description="Delete an user")
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, description="User deleted")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=403, description="You cannot delete others companies's user")
      * @OA\Response(response=404, description="User not found")
      *

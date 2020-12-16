@@ -74,21 +74,11 @@ class BrandController extends AbstractController
      * @param Brand $brand
      * @return JsonResponse
      *
-     * @OA\Response(
-     *     response=200,
-     *     description="Return details of a phone brand",
-     *     @OA\JsonContent(
-     *       ref=@Model(type=BrandDto::class, groups={"show_brand"})
-     *     )
-     * )
-     * @OA\Response(
-     *     response=404,
-     *     description="Brand not found",
-     * )
-     * @OA\Response(
-     *     response=400,
-     *     description="Bad Url Parameter, Brand id must be an integer"
-     * )
+     * @OA\Get(description="This resource represent a mobile phone brand")
+     * @OA\Parameter (ref="#/components/parameters/id")
+     * @OA\Response(response=200, ref="#/components/responses/readBrand")
+     * @OA\Response(response=404, description="Brand not found")
+     * @OA\Response(response=400, description="Bad Url Parameter, Brand id must be an integer")
      *
      */
     public function read(Brand $brand): JsonResponse
@@ -115,7 +105,7 @@ class BrandController extends AbstractController
      *      )
      * )
      *
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")     *
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")     *
      * @OA\RequestBody(ref="#/components/requestBodies/NewBrand")
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
@@ -157,7 +147,7 @@ class BrandController extends AbstractController
      *      )
      * )
      * @OA\Response(response=404, description="Brand not found")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/UpdateBrand")
      */
     public function update(Brand $brand, Request $request, FormHelper $formHelper, DataHelper $dataHelper, EntityManagerInterface $em): JsonResponse
@@ -186,7 +176,7 @@ class BrandController extends AbstractController
      * @OA\Parameter (name="id", in="path", description="Brand id", @OA\Schema (type="integer"))
      * @OA\Response(response=200, description="Brand deleted")
      * @OA\Response(response=409, description="Cannot delete Brand, all products attached to this brand must be deleted first")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=404, description="Brand not found")
      */
     public function delete(Brand $brand, EntityManagerInterface $em): JsonResponse
