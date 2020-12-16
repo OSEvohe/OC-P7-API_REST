@@ -25,7 +25,12 @@ trait IndexEmbeddableTrait
         $this->request = $requestStack->getCurrentRequest();
     }
 
-
+    /**
+     * @param array $data
+     * @param string $embeddedFieldName
+     * @return IndexDto
+     * @throws Exception
+     */
     public function getEntityListHAL(array $data, string $embeddedFieldName = 'results'): IndexDto
     {
         if (!isset($data['list']) || !isset($data['count'])){

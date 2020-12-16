@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ManageEntities
 {
@@ -35,6 +36,10 @@ class ManageEntities
 
     public function list($className, $page = 1, $limit = 10): array
     {
+        if (1 > $page or 0 == $limit){
+            throw new NotFoundHttpException("Invalid page or limit value");
+        }
+
         $er = $this->em->getRepository($className);
         $list = $er->findBy([], [], $limit, ($page - 1) * $limit);
         $count = $er->count([]);

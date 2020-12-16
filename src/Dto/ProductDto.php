@@ -4,9 +4,9 @@
 namespace App\Dto;
 
 
-use App\Entity\Product;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use OpenApi\Annotations as OA;
 
 class ProductDto extends AbstractDto
 {
@@ -17,7 +17,7 @@ class ProductDto extends AbstractDto
     /**
      * @Groups({"list_products", "show_product", "show_brand"})
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->entity->getId();
     }
@@ -26,7 +26,7 @@ class ProductDto extends AbstractDto
     /**
      * @Groups({"list_products", "show_product", "show_brand"})
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->entity->getName();
     }
@@ -35,7 +35,7 @@ class ProductDto extends AbstractDto
     /**
      * @Groups({"list_products", "show_product", "show_brand"})
      */
-    public function getPrice()
+    public function getPrice() : string
     {
         return $this->entity->getPrice();
     }
@@ -44,7 +44,7 @@ class ProductDto extends AbstractDto
     /**
      * @Groups({"show_product"})
      */
-    public function getDescription()
+    public function getDescription() : string
     {
         return $this->entity->getDescription();
     }
@@ -53,6 +53,8 @@ class ProductDto extends AbstractDto
     /**
      * @SerializedName("_links")
      * @Groups({"show_brand", "show_product", "list_products"})
+     *
+     * @OA\Property(ref="#/components/schemas/_links")
      */
     public function getLink()
     {
@@ -62,6 +64,14 @@ class ProductDto extends AbstractDto
     /**
      * @Groups({"show_product", "list_products"})
      * @SerializedName("_embedded")
+     *
+     * @OA\Property(
+     *      type="object",
+     *     @OA\Property (
+     *     property="brand",
+     *     ref="#/components/schemas/BrandsIndex"
+     *     )
+     * )
      */
     public function getEmbedded()
     {
