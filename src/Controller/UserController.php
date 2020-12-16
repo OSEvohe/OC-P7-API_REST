@@ -21,7 +21,8 @@ use OpenApi\Annotations as OA;
 
 /**
  * @Route ("/api")
- * @OA\Tag (name="User")
+ * @OA\Tag (name="Users")
+ * @OA\Response (response="401", ref="#/components/responses/JWTTokenError")
  */
 class UserController extends AbstractController
 {
@@ -162,6 +163,7 @@ class UserController extends AbstractController
      * @param User $user
      * @return JsonResponse
      *
+     * @OA\Delete(description="Delete an user")
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, description="User deleted")
      * @OA\Response(response=400, ref="#/components/responses/badParameters")

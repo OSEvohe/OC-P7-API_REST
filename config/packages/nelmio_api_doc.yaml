@@ -90,6 +90,27 @@ nelmio_api_doc:
                   type: array
                   items:
                     ref: "#/components/schemas/CompaniesIndex"
+        JWTTokenMissing:
+          type: object
+          properties:
+            code:
+              type: integer
+              const: 401
+            message:
+              type: string
+              const: "JWT Token not found"
+        JWTTokenExpired:
+          type: object
+          properties:
+            code:
+              type: integer
+              const: 401
+            message:
+              type: string
+              const: "JWT Token Expired"
+
+
+
       requestBodies:
         LoginCheck:
           required: true
@@ -102,6 +123,9 @@ nelmio_api_doc:
                     type: "string"
                   password:
                     type: "string"
+              example:
+                username: admin
+                password: PassWord1234!
         NewBrand:
           required: true
           content:
@@ -167,23 +191,26 @@ nelmio_api_doc:
 
 
 
+
       parameters:
         pageNumber:
           name: page
           in: path
           description: "Page number"
-          required: false
+          required: true
           schema:
             type: integer
             default: 1
+            example: 1
         limit:
           name: limit
           in: path
-          description: "Number of items per pages"
-          required: false
+          description: "Number of items per page"
+          required: true
           schema:
             type: integer
             default: 10
+            example: 10
         id:
           name: id
           in: path
@@ -276,17 +303,72 @@ nelmio_api_doc:
                   token:
                     type: string
                     example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2MDgwNDYyODMsImV4cCI6MTYwODA0OTg4Mywicm9sZXMiOlsiUk9MRV9TVVBFUl9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImFkbWluIn0.EIDwKcavSnS0MJSFy92lT15PZbYNLny1Jl1ONQo3uOODGbcOz1e_bwD2-YEvdE5E4xsQ2rW6eCk1mYr5ioFmRBumPZfxXaHDff_HljDDqs_f9Yotj_aev8Uz3AW-9m4Fl0b6YzJOoQJ5mIiEOC9ikDsnvaeTqXke9GqQfhga7ZtudkNVJRAwCUHQ9onzGiPp9p3kRpT2SZ6ob8lbKtkOeFzHK9jx9FKtDOMADd8-gvhlb_UJOL7xU3Sc0S2BzZPsSkcAbx2z3S2CuD3zGAGqPFtWn66RKpZT9EtLxTYP1BQoCiIVDDVWkFk5xW4_bqwxCQro6ymnf3omzkl0WA1_K4xSbVvbTMSQ7aovq5KVMSSP6qm6YOgfBEIQSZDxSqJv3zYL8EK9QoDZcs8fvDqXpvbIIKiRCSdcXqN0h3vTuyP5xg5Gk_Lh6wANbrI04etWu8ZCQ7UP4hTzCwymN5wGc-jyTGNXNejnYtf4pFPepPakdj3nqlhAaBFV12cBqaLEcRxO8Ilpq_S2n6ByI9bIpdoQhJcUtLoHw6gPLQq4q2v3X53qUW6d1r1Nk8K3pvYN_08ANhVpO9IGKnybejLq8yZUy2T5AnL5fzTreEwOknQ_Co6PisZeeo3riEXUYG-Jgt-mNqUwLfGirhh6FESyRvbFAc3Ia86BS5hP6a2CPXY"
+        InvalidCredentials:
+          description: "Invalid username and/or password"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "401"
+                  message:
+                    type: string
+                    example: "Invalid credentials."
+        JWTTokenError:
+          description: "JWT Token Invalid - See schemas for possible messages"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - ref: "#/components/schemas/JWTTokenMissing"
+                  - ref: "#/components/schemas/JWTTokenExpired"
+                example:
+                  code: 401
+                  message : "JWT Token Not Found"
+
+    tags:
+      - name: Security
+        description: Use yours credentials to get a authentication token
+      - name: Products
+        description: List and manage mobile phones
+      - name: Brands
+        description: List and manage mobile phone brands
+      - name: Users
+        description: Manage users registered by companies.
+      - name: Companies
+        description: Only Bilemo admin can List and manage companies.
+      - name: Misc
+        description: Other resources
+
+
 
     paths:
+      /api/doc.json:
+        get:
+          tags:
+            - Misc
+          summary:
+            Get the API documentation in Json format
+          security: []
+          responses:
+            '200':
+              description : This documentations in Json format
       /api/login_check:
-        summary: "Retrieve your JWT Token !"
         post:
+          security: []
+          tags:
+            - Security
+          summary: "Retrieve your JWT Token"
+          description: "Retrieve your JWT Token by sending your username/password"
           requestBody:
             ref: "#/components/requestBodies/LoginCheck"
           responses:
             '200':
-              ref: "#components/responses/Token"
-
+              ref: "#/components/responses/Token"
+            '401':
+              ref: "#/components/responses/InvalidCredentials"
 
   areas: # to filter documented areas
     path_patterns:

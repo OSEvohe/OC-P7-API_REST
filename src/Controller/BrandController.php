@@ -24,7 +24,8 @@ use OpenApi\Annotations as OA;
 /**
  * @Route ("/api")
  *
- * @OA\Tag(name="Brand")
+ * @OA\Tag(name="Brands", description="List and manage mobile phone brands")
+ * @OA\Response (response="401", ref="#/components/responses/JWTTokenError")
  */
 class BrandController extends AbstractController
 {
@@ -48,23 +49,17 @@ class BrandController extends AbstractController
 
     /**
      * List Phone brands
-     * @Route("/brands/{page}/{limit}", name="brands_list", methods={"GET"})
+     * @Route("/brands/{page}/{limit}", name="brands_list", methods={"GET"}, requirements={"page"="\d*", "limit"="\d*"})
      *
      * @param int $page;
      * @param int $limit
      * @return JsonResponse
      * @throws Exception
      *
+     * @OA\Get(description="Return a list of phone brand")
      * @OA\Parameter (ref="#/components/parameters/pageNumber")
-     * @OA\Parameter (ref="#/components/parameters/limit")
-     *
-     * @OA\Response(
-     *     response=200,
-     *     description="Return list of brands",
-     *     @OA\JsonContent(
-     *       ref= "#/components/schemas/Brands")
-     *     )
-     * )
+     * @OA\Parameter (ref="#/components/parameters/limit")     *
+     * @OA\Response(response=200,description="Return list of brands", @OA\JsonContent(ref= "#/components/schemas/Brands")))
      */
     public function index(int $page = 1, int $limit = 10): JsonResponse
     {
@@ -75,7 +70,7 @@ class BrandController extends AbstractController
 
     /**
      * Show brand details
-     * @Route("/brand/{id}", name="brand_read", methods={"GET"})
+     * @Route("/brand/{id}", name="brand_read", methods={"GET"}, requirements={"id"="\d*"})
      * @param Brand $brand
      * @return JsonResponse
      *
@@ -141,7 +136,7 @@ class BrandController extends AbstractController
 
     /**
      * Update a brand
-     * @Route ("/brand/{id}", name="brand_update", methods={"PUT", "PATCH"} )
+     * @Route ("/brand/{id}", name="brand_update", methods={"PUT", "PATCH"}, requirements={"id"="\d*"} )
      *
      * @param Brand $brand
      * @param Request $request
@@ -182,7 +177,7 @@ class BrandController extends AbstractController
 
     /**
      * Delete a brand
-     * @Route ("/brand/{id}", name="brand_delete", methods={"DELETE"} )
+     * @Route ("/brand/{id}", name="brand_delete", methods={"DELETE"}, requirements={"id"="\d*"} )
      *
      * @param Brand $brand
      * @param EntityManagerInterface $em

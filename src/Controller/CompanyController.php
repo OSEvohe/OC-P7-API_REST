@@ -23,8 +23,9 @@ use OpenApi\Annotations as OA;
 /**
  * @Route ("/api")
  * @IsGranted("ROLE_SUPER_ADMIN", message="Access to companies denied")
- * @OA\Tag (name="Company", description="A company can manage his users. Only Bilemo admin can manage companies ")
+ * @OA\Tag (name="Companies")
  * @OA\Response(response=403, description="Only Bilemo admin can manage companies")
+ * @OA\Response (response="401", ref="#/components/responses/JWTTokenError")
  */
 class CompanyController extends AbstractController
 {
@@ -48,12 +49,13 @@ class CompanyController extends AbstractController
 
     /**
      * List companies
-     * @Route("/companies/{page}/{limit}", name="companies_list", methods={"GET"})
+     * @Route("/companies/{page}/{limit}", name="companies_list", methods={"GET"}, requirements={"page"="\d*", "limit"="\d*"})
      * @param int $page
      * @param int $limit
      * @return JsonResponse
      * @throws Exception
      *
+     * @OA\Get(description="Return a list of companies")
      * @OA\Parameter (ref="#/components/parameters/pageNumber")
      * @OA\Parameter (ref="#/components/parameters/limit")
      * @OA\Response(response=200, ref="#/components/responses/listCompanies")
@@ -67,7 +69,7 @@ class CompanyController extends AbstractController
 
     /**
      * Show company's details
-     * @Route("/company/{id}", name="company_read", methods={"GET"})
+     * @Route("/company/{id}", name="company_read", methods={"GET"}, requirements={"id"="\d*"})
      * @param Company $company
      * @return JsonResponse
      *
@@ -113,7 +115,7 @@ class CompanyController extends AbstractController
 
     /**
      * Update a company
-     * @Route ("/company/{id}", name="company_update", methods={"PUT", "PATCH"} )
+     * @Route ("/company/{id}", name="company_update", methods={"PUT", "PATCH"}, requirements={"id"="\d*"} )
      *
      * @param Company $company
      * @param Request $request
@@ -143,12 +145,13 @@ class CompanyController extends AbstractController
 
 
     /**
-     * @Route ("/company/{id}", name="company_delete", methods={"DELETE"} )
+     * @Route ("/company/{id}", name="company_delete", methods={"DELETE"}, requirements={"id"="\d*"} )
      *
      * @param Company $company
      * @param EntityManagerInterface $em
      * @return JsonResponse
      *
+     * @OA\Delete(description="Delete a company")
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, description="Company deleted")
      * @OA\Response(response=400, ref="#/components/responses/badParameters")
