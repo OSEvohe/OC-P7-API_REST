@@ -77,7 +77,7 @@ class CompanyController extends AbstractController
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, ref="#/components/responses/readCompany")
      * @OA\Response(response=404, description="Company not found")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      */
     public function read(Company $company): JsonResponse
     {
@@ -96,7 +96,7 @@ class CompanyController extends AbstractController
      *
      * @OA\Post(description="Create a new company")
      * @OA\Response(response=201, ref="#/components/responses/NewCompany")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/NewCompany")
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse
@@ -127,7 +127,7 @@ class CompanyController extends AbstractController
      * @OA\Patch (description="**Update Company**, only fields present in body will be updated")
      * @OA\Put (description="**Update Company**, all fields are required")
      * @OA\Response(response=200, ref="#/components/responses/UpdateCompany")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/UpdateCompany")
      * @OA\Response(response=404, description="Company not found")
      */
@@ -154,7 +154,7 @@ class CompanyController extends AbstractController
      * @OA\Delete(description="Delete a company")
      * @OA\Parameter (ref="#/components/parameters/id")
      * @OA\Response(response=200, description="Company deleted")
-     * @OA\Response(response=400, ref="#/components/responses/badParameters")
+     * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=409, description="Cannot delete, all users attached to this company must be deleted first")
      * @OA\Response(response=404, description="Company not found")
      */
