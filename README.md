@@ -28,3 +28,20 @@ Build an API REST with Symfony
 * Generate public key : `openssl rsa -pubout -in private.pem -out public.pem`
 * move SSH keys (`private.pem` and `public.pem`) to `config/jwt/`
 * set passphrase used to generate the keys in your env.local file (`JWT_PASSPHRASE`)
+
+### Initial database data
+* To start with no data : `php bin/console doctrine:fixtures:load --group=starting_users`
+* To start with samples data : `php bin/console doctrine:fixtures:load`
+
+## Secure your site
+### Admin access
+By default, you can retrieve an admin token :  
+JSON : `{"username":"admin","password":"superPassword34!"}`   
+URL :  `/api/login_check`   
+METHOD :  `POST`
+
+#### Other users
+Samples data come with 1 additional users :  
+JSON : `{"username":"user1","password":"PassWord01!"}`   
+URL :  `/api/login_check`   
+METHOD :  `POST`
