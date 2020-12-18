@@ -160,12 +160,8 @@ class CompanyController extends AbstractController
      */
     public function delete(Company $company, EntityManagerInterface $em): JsonResponse
     {
-        if (0 < $company->getUsers()->count()){
-            throw new ApiCannotDeleteException("Cannot delete Company, all users attached to this company must be deleted first");
-        }
-
         $id = $company->getId();
-        $this->manageCompany->delete($company);
+        $this->manageCompany->deleteCompany($company);
 
         return $this->json(['message' => "Company #".$id." deleted!",Response::HTTP_OK]);
     }
