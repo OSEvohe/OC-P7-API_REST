@@ -57,3 +57,8 @@ Samples data come with 1 additional users :
 JSON : `{"username":"user1","password":"PassWord01!"}`   
 URL :  `/api/login_check`   
 METHOD :  `POST`
+
+## Documentation
+Once project is installed you can find documentation : 
+HTML Doc : (in a browser) : `/api/doc`
+Json Doc : `/api/doc.json`
