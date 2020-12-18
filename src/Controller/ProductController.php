@@ -164,6 +164,7 @@ class ProductController extends AbstractController
      * @OA\Response(response=200, description="Product deleted")
      * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=404, description="Product not found")
+     * @OA\Response(response=403, description="You are not allowed to delete a product")
      */
     public function delete(Product $product): JsonResponse
     {

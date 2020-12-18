@@ -108,7 +108,15 @@ nelmio_api_doc:
             message:
               type: string
               const: "JWT Token Expired"
-
+        JWTTokenInvalid:
+          type: object
+          properties:
+            code:
+              type: integer
+              const: 401
+            message:
+              type: string
+              const: "Invalid JWT Token"
 
 
       requestBodies:
@@ -135,6 +143,8 @@ nelmio_api_doc:
                 properties:
                   name:
                     type: "string"
+                    minLength: 2
+                    maxLength: 100
         UpdateBrand:
           ref: "#/components/requestBodies/NewBrand"
         NewProduct:
@@ -146,12 +156,17 @@ nelmio_api_doc:
                 properties:
                   name:
                     type: string
+                    minLength: 2
+                    maxLength: 100
                   price:
                     type: number
                     format: float
+                    maximum: 99999.99
                     description : "Price with up to 2 decimal digits"
                   description:
                     type: string
+                    minLength: 2
+                    maxLength: 65535
                   brand:
                     type: integer
                     description: "Brand Id"
@@ -166,10 +181,15 @@ nelmio_api_doc:
                 properties:
                   email:
                     type: string
+                    format: email
                   firstName:
                     type: string
+                    minLength: 2
+                    maxLength: 100
                   lastName:
                     type: string
+                    minLength: 2
+                    maxLength: 100
         UpdateUser:
           ref: "#/components/requestBodies/NewUser"
         NewCompany:
@@ -181,10 +201,16 @@ nelmio_api_doc:
                 properties:
                   name:
                     type: string
+                    minLength: 2
+                    maxLength: 100
                   username:
                     type: string
+                    minLength: 3
+                    maxLength: 30
                   plainPassword:
                     type: string
+                    minLength: 8
+                    maxLength: 255
                     description: "Password need at least 8 characters, lower and upper case letters, one number and one special character"
         UpdateCompany:
           ref: "#/components/requestBodies/NewCompany"
@@ -330,6 +356,7 @@ nelmio_api_doc:
                 oneOf:
                   - ref: "#/components/schemas/JWTTokenMissing"
                   - ref: "#/components/schemas/JWTTokenExpired"
+                  - ref: "#/components/schemas/JWTTokenInvalid"
                 example:
                   code: 401
                   message : "JWT Token Not Found"
