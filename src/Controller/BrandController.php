@@ -178,6 +178,7 @@ class BrandController extends AbstractController
      * @OA\Response(response=409, description="Cannot delete Brand, all products attached to this brand must be deleted first")
      * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\Response(response=404, description="Brand not found")
+     * @OA\Response(response=403, description="You are not allowed to delete a brand")
      */
     public function delete(Brand $brand, EntityManagerInterface $em): JsonResponse
     {

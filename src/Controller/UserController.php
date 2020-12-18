@@ -102,6 +102,7 @@ class UserController extends AbstractController
      * @OA\Response(response=201, ref="#/components/responses/NewUser")
      * @OA\Response(response=400, ref="#/components/responses/BadParameters")
      * @OA\RequestBody(ref="#/components/requestBodies/NewUser")
+     * @OA\Response(response=403, description="Bilemo Admin cannot create users")
      *
      */
     public function create(Request $request, FormHelper $formHelper, DataHelper $dataHelper): JsonResponse

@@ -5,11 +5,12 @@ namespace App\DataFixtures;
 use App\Entity\Company;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements FixtureGroupInterface
 {
     /**
      * @var UserPasswordEncoderInterface
@@ -57,10 +58,15 @@ class UserFixtures extends Fixture
         $user2
             ->setEmail('admin@bilemo.com')
             ->setFirstName('Sebastien')
-            ->setLastName('Ollagnier');
+            ->setLastName('Bilemo');
         $user2->setCompany($company);
         $manager->persist($user2);
 
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['starting_users'];
     }
 }
