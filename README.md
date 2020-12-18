@@ -3,6 +3,18 @@
 OpenClassRooms 7th Project
 Build an API REST with Symfony
 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=OSEvohe_OC-P7-API_REST)
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=OSEvohe_OC-P7-API_REST&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=OSEvohe_OC-P7-API_REST)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=OSEvohe_OC-P7-API_REST&metric=alert_status)](https://sonarcloud.io/dashboard?id=OSEvohe_OC-P7-API_REST)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=OSEvohe_OC-P7-API_REST&metric=security_rating)](https://sonarcloud.io/dashboard?id=OSEvohe_OC-P7-API_REST)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=OSEvohe_OC-P7-API_REST&metric=bugs)](https://sonarcloud.io/dashboard?id=OSEvohe_OC-P7-API_REST)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=OSEvohe_OC-P7-API_REST&metric=code_smells)](https://sonarcloud.io/dashboard?id=OSEvohe_OC-P7-API_REST)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=OSEvohe_OC-P7-API_REST&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=OSEvohe_OC-P7-API_REST)
+
+Code Climate  
+[![Maintainability](https://api.codeclimate.com/v1/badges/3c10ea86ff7ba94bf013/maintainability)](https://codeclimate.com/github/OSEvohe/OC-P7-API_REST/maintainability)
+
 ## Prerequisite
 * A Web Server (Apache, Nginx...)
 * PhP 7.3
