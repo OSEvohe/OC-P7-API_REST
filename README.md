@@ -61,4 +61,5 @@ METHOD :  `POST`
 ## Documentation
 Once project is installed you can find documentation : 
 HTML Doc : (in a browser) : `/api/doc`
-Json Doc : `/api/doc.json`
+Json Doc (OpenAPI 3.0) : `/api/doc.json`
+A Pdf version can be found in `/doc` directory
