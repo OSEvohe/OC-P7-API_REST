@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Company;
 use App\Entity\User;
+use App\Exception\ApiCannotDeleteException;
 use App\Exception\ApiDeniedException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -73,5 +74,19 @@ class ManageCompany extends ManageEntities
         }
 
         parent::save($user);
+    }
+
+
+    public function deleteCompany(Company $company)
+    {
+        if (0 < $company->getUsers()->count()){
+            throw new ApiCannotDeleteException("Cannot delete Company, all users attached to this company must be deleted first");
+        }
+
+        if ($this->security->getUser()->getId() == $company->getiD()){
+            throw new ApiDeniedException("Admin cannot delete itself");
+        }
+
+        parent::delete($company);
     }
 }
